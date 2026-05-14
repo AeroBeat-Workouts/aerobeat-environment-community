@@ -36,11 +36,32 @@ The image and video scenes expose web-style fit modes as closely as practical:
 - `contain`
 - `cover`
 
+Video validation is intentionally **truth-locked to canonical `.ogv` (Theora)** input.
+The current testbed does not claim `.webm` or `.mp4` playback support.
+Use `.testbed/assets/videos/calm_blue_sea_1.ogv` as the baseline sample clip.
+
 ## GodotEnv development flow
 
 ```bash
+./scripts/restore-testbed-addons.sh
 cd .testbed
-godotenv addons install
 godot --headless --path . --import
 godot --headless --path . --script addons/gut/gut_cmdln.gd -gdir=res://tests -ginclude_subdirs -gexit
 ```
+
+## Clean restore flow for GodotEnv-managed addons
+
+When Godot imports mark files inside `.testbed/addons/` or `.testbed/.addons/` as dirty,
+rerun the canonical delete-first restore flow from the repo root:
+
+```bash
+./scripts/restore-testbed-addons.sh
+```
+
+That script safely clears the generated GodotEnv install targets first:
+
+- `.testbed/addons/*` except `.editorconfig`
+- `.testbed/.addons/`
+
+Then it reruns `godotenv addons install` so the testbed comes back in a clean state
+without relying on manual deletion tribal knowledge.

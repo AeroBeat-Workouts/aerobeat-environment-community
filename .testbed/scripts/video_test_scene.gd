@@ -45,7 +45,7 @@ func _build_ui() -> void:
 
 	_status_label = Label.new()
 	_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_status_label.text = "Contain/cover is driven through a mirrored TextureRect when the backend exposes a video texture."
+	_status_label.text = "Canonical video support here is truth-locked to .ogv (Theora). Contain/cover is driven through a mirrored TextureRect when the backend exposes a video texture."
 	panel.add_child(_status_label)
 
 	var preview_holder := PanelContainer.new()
@@ -69,7 +69,7 @@ func _build_ui() -> void:
 	_file_dialog.access = FileDialog.ACCESS_FILESYSTEM
 	_file_dialog.root_subfolder = Paths.default_global_dir("videos")
 	_file_dialog.current_dir = Paths.default_global_dir("videos")
-	_file_dialog.filters = PackedStringArray(["*.ogv,*.webm,*.mp4 ; Video files"])
+	_file_dialog.filters = PackedStringArray(["*.ogv ; Ogg Theora video"])
 	_file_dialog.file_selected.connect(_load_video)
 	add_child(_file_dialog)
 
@@ -89,15 +89,24 @@ func _apply_fit_mode(index: int) -> void:
 	_texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED if index == 0 else TextureRect.STRETCH_KEEP_ASPECT_COVERED
 
 func _load_video(path: String) -> void:
+	if path.get_extension().to_lower() != "ogv":
+		_path_label.text = "Unsupported video extension: %s" % path
+		_status_label.text = "Video validation is truth-locked to canonical .ogv input."
+		return
 	var local_path := Paths.localize_if_possible(path)
 	var stream = ResourceLoader.load(local_path)
 	if stream == null and local_path != path:
 		stream = ResourceLoader.load(path)
 	if stream == null:
 		_path_label.text = "Failed to load video resource: %s" % path
+		_status_label.text = "Video loading only supports canonical .ogv files here. Convert source clips before validation."
+		return
+	if not (stream is VideoStreamTheora):
+		_path_label.text = "Unsupported video resource type: %s" % path
+		_status_label.text = "Expected a VideoStreamTheora-backed .ogv file."
 		return
 	_video_player.stream = stream
 	_video_player.autoplay = true
 	_video_player.play()
 	_path_label.text = path
-	_status_label.text = "Loaded video. Right now contain/cover mirrors the video texture when available; otherwise the built-in player is shown as a fallback."
+	_status_label.text = "Loaded canonical .ogv video. Contain/cover mirrors the video texture when available; otherwise the built-in player is shown as a fallback."

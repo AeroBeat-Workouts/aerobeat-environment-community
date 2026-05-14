@@ -6,6 +6,11 @@ export_presets.cfg
 # Imported translations (automatically generated from CSV files)
 *.translation
 
+# Godot-generated import sidecars / extracted textures
+*.import
+.testbed/assets/models/*_[0-9].png
+.testbed/assets/models/*_[0-9].jpg
+
 # Godot-generated UID sidecars
 *.uid
 
