@@ -2,7 +2,8 @@ config_version=5
 
 [application]
 
-config/name="AeroBeat Internal Environment Testbed"
+config/name="AeroBeat Environment Community Testbed"
+run/main_scene="res://scenes/splat_test.tscn"
 config/features=PackedStringArray("4.6", "Forward Plus")
 
 [editor_plugins]

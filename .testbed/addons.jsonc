@@ -1,13 +1,27 @@
 {
   "$schema": "https://chickensoft.games/schemas/addons.schema.json",
   "addons": {
-    // Environment-template bootstrap pins the shared asset/resource contract.
+    // Environment-lane shared asset contract.
     "aerobeat-asset-core": {
       "url": "git@github.com:AeroBeat-Workouts/aerobeat-asset-core.git",
       "checkout": "main",
       "subfolder": "/"
     },
-    // GUT drives the repo-local test suite inside the hidden testbed/workbench.
+    // Stable AeroBeat-facing Gaussian splat wrapper.
+    "aerobeat-tool-gaussian-splat": {
+      "url": "git@github.com:AeroBeat-Workouts/aerobeat-tool-gaussian-splat.git",
+      "checkout": "main",
+      "subfolder": "/"
+    },
+    // Honest vendor pin for the raw gdgs plugin payload. This stays routed through
+    // the AeroBeat vendor repo rather than upstream directly because GodotEnv does
+    // not resolve transitive addon manifests for us.
+    "gdgs": {
+      "url": "git@github.com:AeroBeat-Workouts/aerobeat-vendor-gdgs.git",
+      "checkout": "main",
+      "subfolder": "/addons/gdgs"
+    },
+    // Repo-local tests.
     "gut": {
       "url": "git@github.com:bitwes/Gut.git",
       "checkout": "main",
