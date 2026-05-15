@@ -31,6 +31,8 @@ The splat scene also exposes:
 - a left-side debug/info panel
 - arbitrary local filesystem loading outside `res://`
 - explicit AeroBeat format guidance: `.compressed.ply` is the official recommended splat format, while `.ply`, `.splat`, and `.sog` remain compatibility-supported through GDGS
+- renderer-path support truth from the wrapper so the scene can disable unsupported renderer paths instead of pretending splats should visibly render everywhere
+- current validation warning text that keeps Forward+ / Vulkan render output in the experimental bucket until the GDGS compositor path is proven stable on the active backend/hardware
 
 The image and video scenes expose web-style fit modes as closely as practical:
 
@@ -40,6 +42,11 @@ The image and video scenes expose web-style fit modes as closely as practical:
 Video validation is intentionally **truth-locked to canonical `.ogv` (Theora)** input.
 The current testbed does not claim `.webm` or `.mp4` playback support.
 Use `.testbed/assets/videos/calm_blue_sea_1.ogv` as the baseline sample clip.
+
+Renderer-path truth note:
+
+- Renderer paths without a `RenderingDevice` backend are currently treated as unsupported for visible splat rendering in the testbed, so the load buttons stay disabled there instead of yielding a blank/background-only result.
+- Renderer paths with a `RenderingDevice` backend remain visible-render **experimental** in the current slice. The current validation repros have shown Forward+ / Vulkan can still crash in the GDGS compositor after a successful load, so the testbed now warns instead of implying stable support.
 
 ## GodotEnv development flow
 

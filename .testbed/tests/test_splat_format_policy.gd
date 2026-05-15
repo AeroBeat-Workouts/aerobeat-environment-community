@@ -23,4 +23,7 @@ func test_splat_scene_prioritizes_recommended_format_without_overclaiming() -> v
 	assert_true(text.contains("Choose recommended .compressed.ply from assets/splats"), "UI should steer toward the recommended format")
 	assert_true(text.contains("Recommended AeroBeat splat format"), "file picker should label the recommended format clearly")
 	assert_true(text.contains("GDGS compatibility formats"), "file picker should preserve compatibility wording")
+	assert_true(text.contains("Visible splat rendering is disabled on this renderer path."), "UI should truth-lock unsupported renderer paths instead of pretending they work")
+	assert_true(text.contains("_manager.get_renderer_support_status()"), "UI should consult the wrapper renderer support API instead of guessing")
+	assert_true(text.contains("Support: %s"), "UI should surface renderer support level in the panel")
 	assert_false(text.contains(".spz"), "splat scene should not imply .spz support")

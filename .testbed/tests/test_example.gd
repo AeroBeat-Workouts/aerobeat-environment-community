@@ -16,6 +16,8 @@ func test_readme_documents_testbed_scope() -> void:
 	assert_true(readme_text.contains("image, video, GLB, and Gaussian splat"), "README should describe the four test surfaces")
 	assert_true(readme_text.contains("center"), "README should document shared config fields")
 	assert_true(readme_text.contains("arbitrary local filesystem loading outside `res://`"), "README should mention arbitrary local splat loading")
+	assert_true(readme_text.contains("Renderer-path truth note:"), "README should document renderer-path truth for splats")
+	assert_true(readme_text.contains("Forward+ / Vulkan can still crash in the GDGS compositor"), "README should truth-lock the current Forward+ / Vulkan validation warning")
 
 func test_plugin_cfg_matches_environment_community_repo_role() -> void:
 	var config := ConfigFile.new()

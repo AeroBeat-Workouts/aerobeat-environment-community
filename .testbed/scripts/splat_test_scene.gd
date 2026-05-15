@@ -14,11 +14,15 @@ var _path_label: Label
 var _loading_state_label: Label
 var _loading_bar: ProgressBar
 var _debug_label: RichTextLabel
+var _renderer_warning_label: Label
 var _rooted_dialog: FileDialog
 var _any_dialog: FileDialog
+var _pick_button: Button
+var _any_button: Button
 var _center_edits: Array[LineEdit] = []
 var _scale_edits: Array[LineEdit] = []
 var _rotation_edits: Array[LineEdit] = []
+var _renderer_support_status: Dictionary = {}
 
 func _ready() -> void:
 	_manager = SplatManagerScript.new()
@@ -26,8 +30,10 @@ func _ready() -> void:
 	_manager.background_load_started.connect(_on_background_load_started)
 	_manager.background_load_progressed.connect(_on_background_load_progressed)
 	_manager.background_load_finished.connect(_on_background_load_finished)
+	_renderer_support_status = _manager.get_renderer_support_status()
 	_setup_3d()
 	_setup_ui()
+	_apply_renderer_support_ui()
 	_set_loading_ui({
 		"pending": false,
 		"progress": 0.0,
@@ -73,15 +79,19 @@ func _setup_ui() -> void:
 	title.text = "Gaussian splat test scene"
 	vbox.add_child(title)
 
-	var pick_button := Button.new()
-	pick_button.text = "Choose recommended .compressed.ply from assets/splats"
-	pick_button.pressed.connect(_open_rooted_dialog)
-	vbox.add_child(pick_button)
+	_renderer_warning_label = Label.new()
+	_renderer_warning_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	vbox.add_child(_renderer_warning_label)
 
-	var any_button := Button.new()
-	any_button.text = "Choose arbitrary local splat file (compat formats also supported)"
-	any_button.pressed.connect(_open_any_dialog)
-	vbox.add_child(any_button)
+	_pick_button = Button.new()
+	_pick_button.text = "Choose recommended .compressed.ply from assets/splats"
+	_pick_button.pressed.connect(_open_rooted_dialog)
+	vbox.add_child(_pick_button)
+
+	_any_button = Button.new()
+	_any_button.text = "Choose arbitrary local splat file (compat formats also supported)"
+	_any_button.pressed.connect(_open_any_dialog)
+	vbox.add_child(_any_button)
 
 	_path_label = Label.new()
 	_path_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -169,13 +179,38 @@ func _make_vector3_editor(label_text: String, target: Array[LineEdit], defaults:
 		target.append(edit)
 	return wrapper
 
+func _apply_renderer_support_ui() -> void:
+	var renderer_name := String(_renderer_support_status.get("renderer_name", "unknown"))
+	var support_level := String(_renderer_support_status.get("support_level", "unknown"))
+	var message := String(_renderer_support_status.get("message", "Renderer status unavailable."))
+	_renderer_warning_label.text = "Renderer: %s\nSupport: %s\n%s" % [renderer_name, support_level, message]
+	var can_attempt_render := bool(_renderer_support_status.get("can_attempt_render", false))
+	_pick_button.disabled = not can_attempt_render
+	_any_button.disabled = not can_attempt_render
+	if not can_attempt_render:
+		_status_label.text = "Visible splat rendering is disabled on this renderer path."
+		_loading_state_label.text = "Renderer path unsupported"
+	else:
+		_status_label.text = "WASD / arrows move. Right-click captures mouse. Esc releases."
+
 func _open_rooted_dialog() -> void:
+	if not _can_attempt_render():
+		return
 	_rooted_dialog.popup_centered_ratio(0.8)
 
 func _open_any_dialog() -> void:
+	if not _can_attempt_render():
+		return
 	_any_dialog.popup_centered_ratio(0.8)
 
+func _can_attempt_render() -> bool:
+	return bool(_renderer_support_status.get("can_attempt_render", false))
+
 func _load_splat(path: String) -> void:
+	if not _can_attempt_render():
+		_status_label.text = String(_renderer_support_status.get("message", "Visible splat rendering is unavailable on this renderer path."))
+		_debug_label.text = _renderer_warning_label.text
+		return
 	_current_asset_path = path
 	_path_label.text = path
 	_clear_current_splat()
@@ -278,13 +313,15 @@ func _install_loaded_splat(result: Dictionary, success_text: String) -> void:
 	_display_root.add_child(_splat_node)
 	_apply_transform_from_ui()
 	_status_label.text = success_text
-	_debug_label.text = "Path: %s\nFormat: %s\nPoints: %s\nAABB: %s\nPhase: %s\nProgress: %s%%" % [
+	_debug_label.text = "Path: %s\nFormat: %s\nPoints: %s\nAABB: %s\nPhase: %s\nProgress: %s%%\nRenderer: %s\nSupport: %s" % [
 		result.get("path", _current_asset_path),
 		result.get("format", "unknown"),
 		str(result.get("point_count", 0)),
 		str(result.get("aabb", AABB())),
 		result.get("phase", "ready"),
-		str(roundf(clampf(float(result.get("progress", 1.0)), 0.0, 1.0) * 100.0))
+		str(roundf(clampf(float(result.get("progress", 1.0)), 0.0, 1.0) * 100.0)),
+		_renderer_support_status.get("renderer_name", "unknown"),
+		_renderer_support_status.get("support_level", "unknown")
 	]
 
 func _set_loading_ui(result: Dictionary) -> void:
