@@ -63,12 +63,12 @@ func _setup_ui() -> void:
 	vbox.add_child(title)
 
 	var pick_button := Button.new()
-	pick_button.text = "Choose splat from assets/splats"
+	pick_button.text = "Choose recommended .compressed.ply from assets/splats"
 	pick_button.pressed.connect(_open_rooted_dialog)
 	vbox.add_child(pick_button)
 
 	var any_button := Button.new()
-	any_button.text = "Choose arbitrary local splat file"
+	any_button.text = "Choose arbitrary local splat file (compat formats also supported)"
 	any_button.pressed.connect(_open_any_dialog)
 	vbox.add_child(any_button)
 
@@ -118,7 +118,7 @@ func _setup_ui() -> void:
 	_rooted_dialog.access = FileDialog.ACCESS_FILESYSTEM
 	_rooted_dialog.root_subfolder = Paths.default_global_dir("splats")
 	_rooted_dialog.current_dir = Paths.default_global_dir("splats")
-	_rooted_dialog.filters = PackedStringArray(["*.ply,*.splat,*.sog ; Splat assets", "*.compressed.ply ; Compressed PLY"])
+	_rooted_dialog.filters = PackedStringArray(["*.compressed.ply ; Recommended AeroBeat splat format", "*.ply,*.splat,*.sog ; GDGS compatibility formats"])
 	_rooted_dialog.file_selected.connect(_load_splat)
 	layer.add_child(_rooted_dialog)
 
@@ -126,7 +126,7 @@ func _setup_ui() -> void:
 	_any_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	_any_dialog.access = FileDialog.ACCESS_FILESYSTEM
 	_any_dialog.current_dir = Paths.default_global_dir("splats")
-	_any_dialog.filters = PackedStringArray(["*.ply,*.splat,*.sog ; Splat assets", "*.compressed.ply ; Compressed PLY"])
+	_any_dialog.filters = PackedStringArray(["*.compressed.ply ; Recommended AeroBeat splat format", "*.ply,*.splat,*.sog ; GDGS compatibility formats"])
 	_any_dialog.file_selected.connect(_load_splat)
 	layer.add_child(_any_dialog)
 

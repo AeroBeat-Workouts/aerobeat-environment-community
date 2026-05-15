@@ -30,6 +30,7 @@ The splat scene also exposes:
 
 - a left-side debug/info panel
 - arbitrary local filesystem loading outside `res://`
+- explicit AeroBeat format guidance: `.compressed.ply` is the official recommended splat format, while `.ply`, `.splat`, and `.sog` remain compatibility-supported through GDGS
 
 The image and video scenes expose web-style fit modes as closely as practical:
 
