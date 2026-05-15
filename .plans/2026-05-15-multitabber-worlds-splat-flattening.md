@@ -229,7 +229,7 @@ Post-flatten verification: Python/filesystem checks confirmed `REMAINING_DIRS []
 **Reference Check:** `REF-01` satisfied: the parent `MultiTabber Worlds` folder now holds the complete flattened set of 40 `.compressed.ply` files with no remaining child folders. `REF-02` still matches the repo testbed role. `REF-03` and `REF-04` satisfied via the official `@playcanvas/splat-transform` CLI path (`npx -y @playcanvas/splat-transform`).
 
 **Commits:**
-- cdca063 - Normalize and flatten MultiTabber Worlds compressed splats
+- a366a3a - Normalize and flatten MultiTabber Worlds compressed splats
 
 **Lessons Learned:** Existing folder contents were inconsistent enough that an up-front audit was necessary, and some folder names intentionally diverged from the chosen asset basenames, so preserving basename-derived output names was safer than forcing folder-name parity.
 
