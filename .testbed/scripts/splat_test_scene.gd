@@ -11,6 +11,8 @@ var _splat_node: Node3D
 var _current_asset_path: String = ""
 var _status_label: Label
 var _path_label: Label
+var _loading_state_label: Label
+var _loading_bar: ProgressBar
 var _debug_label: RichTextLabel
 var _rooted_dialog: FileDialog
 var _any_dialog: FileDialog
@@ -21,8 +23,17 @@ var _rotation_edits: Array[LineEdit] = []
 func _ready() -> void:
 	_manager = SplatManagerScript.new()
 	add_child(_manager)
+	_manager.background_load_started.connect(_on_background_load_started)
+	_manager.background_load_progressed.connect(_on_background_load_progressed)
+	_manager.background_load_finished.connect(_on_background_load_finished)
 	_setup_3d()
 	_setup_ui()
+	_set_loading_ui({
+		"pending": false,
+		"progress": 0.0,
+		"phase": "idle",
+		"status": "Idle"
+	})
 
 func _setup_3d() -> void:
 	_display_root = Node3D.new()
@@ -52,7 +63,7 @@ func _setup_ui() -> void:
 	panel.offset_left = 16
 	panel.offset_top = 16
 	panel.offset_right = 400
-	panel.offset_bottom = 680
+	panel.offset_bottom = 720
 	layer.add_child(panel)
 
 	var vbox := VBoxContainer.new()
@@ -81,6 +92,19 @@ func _setup_ui() -> void:
 	_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_status_label.text = "WASD / arrows move. Right-click captures mouse. Esc releases."
 	vbox.add_child(_status_label)
+
+	_loading_state_label = Label.new()
+	_loading_state_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_loading_state_label.text = "Idle"
+	vbox.add_child(_loading_state_label)
+
+	_loading_bar = ProgressBar.new()
+	_loading_bar.min_value = 0.0
+	_loading_bar.max_value = 100.0
+	_loading_bar.value = 0.0
+	_loading_bar.show_percentage = true
+	_loading_bar.visible = false
+	vbox.add_child(_loading_bar)
 
 	vbox.add_child(_make_vector3_editor("Center", _center_edits, Vector3.ZERO))
 	vbox.add_child(_make_vector3_editor("Scale", _scale_edits, Vector3.ONE))
@@ -154,27 +178,36 @@ func _open_any_dialog() -> void:
 func _load_splat(path: String) -> void:
 	_current_asset_path = path
 	_path_label.text = path
-	if _splat_node != null:
-		_splat_node.queue_free()
-		_splat_node = null
-	var result: Dictionary = _manager.create_splat_node_from_path(path)
-	if not result.get("ok", false):
-		_status_label.text = result.get("message", "Failed to load splat")
-		_debug_label.text = _status_label.text
+	_clear_current_splat()
+	_status_label.text = "Starting async load..."
+	_debug_label.text = ""
+	var result: Dictionary = _manager.begin_create_splat_node_from_path(path)
+	if result.get("ok", false):
+		_set_loading_ui(result)
 		return
-	_splat_node = result["node"]
-	_display_root.add_child(_splat_node)
-	_apply_transform_from_ui()
-	_status_label.text = "Loaded splat via AeroBeat wrapper API."
-	_debug_label.text = "Path: %s
-Format: %s
-Points: %s
-AABB: %s" % [
-		result.get("path", path),
-		result.get("format", "unknown"),
-		str(result.get("point_count", 0)),
-		str(result.get("aabb", AABB()))
-	]
+	if int(result.get("error", OK)) == ERR_UNAVAILABLE:
+		_status_label.text = "Async loading is only available for .ply and .compressed.ply. Falling back to synchronous compatibility load."
+		_set_loading_ui({
+			"pending": false,
+			"progress": 0.0,
+			"phase": "idle",
+			"status": "Compatibility format uses synchronous load"
+		})
+		var sync_result: Dictionary = _manager.create_splat_node_from_path(path)
+		if sync_result.get("ok", false):
+			_install_loaded_splat(sync_result, "Loaded via synchronous compatibility path.")
+		else:
+			_status_label.text = sync_result.get("message", "Failed to load splat")
+			_debug_label.text = _status_label.text
+		return
+	_status_label.text = result.get("message", "Failed to start async load")
+	_debug_label.text = _status_label.text
+	_set_loading_ui({
+		"pending": false,
+		"progress": 0.0,
+		"phase": "idle",
+		"status": "Load failed to start"
+	})
 
 func _apply_transform_from_ui() -> void:
 	if _splat_node == null:
@@ -220,3 +253,51 @@ func _set_line_edits(edits: Array[LineEdit], value: Vector3) -> void:
 	edits[0].text = str(value.x)
 	edits[1].text = str(value.y)
 	edits[2].text = str(value.z)
+
+func _on_background_load_started(result: Dictionary) -> void:
+	_set_loading_ui(result)
+	_status_label.text = "Async load started."
+
+func _on_background_load_progressed(result: Dictionary) -> void:
+	_set_loading_ui(result)
+	_status_label.text = "Async load in progress."
+
+func _on_background_load_finished(result: Dictionary) -> void:
+	_set_loading_ui(result)
+	if not result.get("ok", false):
+		_status_label.text = result.get("message", "Failed to load splat")
+		_debug_label.text = _status_label.text
+		return
+	_install_loaded_splat(result, "Loaded via async AeroBeat wrapper API.")
+
+func _install_loaded_splat(result: Dictionary, success_text: String) -> void:
+	if _splat_node != null:
+		_splat_node.queue_free()
+		_splat_node = null
+	_splat_node = result["node"]
+	_display_root.add_child(_splat_node)
+	_apply_transform_from_ui()
+	_status_label.text = success_text
+	_debug_label.text = "Path: %s\nFormat: %s\nPoints: %s\nAABB: %s\nPhase: %s\nProgress: %s%%" % [
+		result.get("path", _current_asset_path),
+		result.get("format", "unknown"),
+		str(result.get("point_count", 0)),
+		str(result.get("aabb", AABB())),
+		result.get("phase", "ready"),
+		str(roundf(clampf(float(result.get("progress", 1.0)), 0.0, 1.0) * 100.0))
+	]
+
+func _set_loading_ui(result: Dictionary) -> void:
+	var pending := bool(result.get("pending", false))
+	var progress := clampf(float(result.get("progress", 0.0)), 0.0, 1.0)
+	_loading_bar.visible = pending
+	_loading_bar.value = progress * 100.0
+	_loading_state_label.text = "%s (%d%%)" % [
+		result.get("status", "Idle"),
+		int(round(progress * 100.0))
+	] if pending else result.get("status", "Idle")
+
+func _clear_current_splat() -> void:
+	if _splat_node != null:
+		_splat_node.queue_free()
+		_splat_node = null
