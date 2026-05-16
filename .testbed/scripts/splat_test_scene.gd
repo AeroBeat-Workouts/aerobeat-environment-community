@@ -3,7 +3,7 @@ extends Node3D
 const Paths := preload("res://scripts/testbed_paths.gd")
 const ConfigUtils := preload("res://scripts/transform_config.gd")
 const FreeLookCameraScript := preload("res://scripts/free_look_camera.gd")
-const SplatManagerScript := preload("res://addons/aerobeat-tool-gaussian-splat/src/AeroGaussianSplatManager.gd")
+const SplatManagerScript := preload("res://addons/aerobeat-environment-gaussian-splat/src/AeroGaussianSplatManager.gd")
 
 var _manager
 var _display_root: Node3D

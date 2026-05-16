@@ -28,5 +28,5 @@ func test_manifest_mentions_tool_and_vendor_dependencies() -> void:
 	var file := FileAccess.open(ProjectSettings.globalize_path("res://addons.jsonc"), FileAccess.READ)
 	assert_true(file != null, "addons manifest should exist")
 	var text := file.get_as_text()
-	assert_true(text.contains('"aerobeat-tool-gaussian-splat"'), "Manifest should depend on the AeroBeat splat tool")
+	assert_true(text.contains('"aerobeat-environment-gaussian-splat"'), "Manifest should depend on the AeroBeat splat tool")
 	assert_true(text.contains('"gdgs"'), "Manifest should pin gdgs through the vendor repo")
