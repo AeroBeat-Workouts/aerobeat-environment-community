@@ -10,7 +10,10 @@ func test_video_scene_is_truth_locked_to_ogv() -> void:
 	assert_true(text.contains("*.ogv ; Ogg Theora video"), "video chooser should only advertise canonical .ogv support")
 	assert_false(text.contains("*.webm"), "video chooser should not overclaim .webm support")
 	assert_false(text.contains("*.mp4"), "video chooser should not overclaim .mp4 support")
-	assert_true(text.contains("VideoStreamTheora"), "video loader should enforce Theora-backed streams")
+	assert_true(text.contains("AeroGodotVideoBackendFactory"), "video scene should route playback through the shared backend factory")
+	assert_true(text.contains("_video_manager.load"), "video scene should load media through the shared video manager")
+	assert_false(text.contains("VideoStreamPlayer.new()"), "video scene should not instantiate the built-in player directly anymore")
+	assert_false(text.contains("var _video_player: VideoStreamPlayer"), "video scene should not type its own direct VideoStreamPlayer anymore")
 
 func test_canonical_video_asset_is_ogv_only() -> void:
 	var ogv_path := ProjectSettings.globalize_path("res://assets/videos/calm_blue_sea_1.ogv")

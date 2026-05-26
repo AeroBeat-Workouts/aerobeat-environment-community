@@ -13,6 +13,22 @@
       "checkout": "main",
       "subfolder": "/"
     },
+    // Video testbed playback now routes through the shared tool facade + Godot backend.
+    "aerobeat-tool-core": {
+      "url": "git@github.com:AeroBeat-Workouts/aerobeat-tool-core.git",
+      "checkout": "main",
+      "subfolder": "/"
+    },
+    "aerobeat-tool-video-player": {
+      "url": "git@github.com:AeroBeat-Workouts/aerobeat-tool-video-player.git",
+      "checkout": "main",
+      "subfolder": "/"
+    },
+    "aerobeat-vendor-godot-video": {
+      "url": "git@github.com:AeroBeat-Workouts/aerobeat-vendor-godot-video.git",
+      "checkout": "main",
+      "subfolder": "/"
+    },
     // Honest vendor pin for the raw gdgs plugin payload. This stays routed through
     // the AeroBeat vendor repo rather than upstream directly because GodotEnv does
     // not resolve transitive addon manifests for us.
