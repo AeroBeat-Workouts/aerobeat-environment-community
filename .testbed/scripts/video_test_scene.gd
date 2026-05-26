@@ -1,7 +1,8 @@
 extends Control
 
 const Paths := preload("res://scripts/testbed_paths.gd")
-const BackendFactoryScript := preload("res://addons/aerobeat-vendor-godot-video/src/AeroGodotVideoBackendFactory.gd")
+const VideoPlayerManagerScript := preload("res://addons/aerobeat-tool-video-player/src/AeroVideoPlayerManager.gd")
+const GodotVideoBackendScript := preload("res://addons/aerobeat-vendor-godot-video/src/AeroGodotVideoBackend.gd")
 
 var _path_label: Label
 var _status_label: Label
@@ -49,7 +50,7 @@ func _build_ui() -> void:
 
 	_status_label = Label.new()
 	_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_status_label.text = "Canonical video support here is truth-locked to .ogv (Theora). Playback now routes through the shared AeroVideoPlayerManager/AeroGodotVideoBackendFactory stack. Contain/cover mirrors the backend texture when available."
+	_status_label.text = "Canonical video support here is truth-locked to .ogv (Theora). Playback now routes through the shared AeroVideoPlayerManager facade with the real AeroGodotVideoBackend injected beneath it. Contain/cover mirrors the backend texture when available."
 	panel.add_child(_status_label)
 
 	var preview_holder := PanelContainer.new()
@@ -96,8 +97,9 @@ func _process(_delta: float) -> void:
 		(backend_player as CanvasItem).visible = true
 
 func _build_video_manager() -> Node:
-	var factory := BackendFactoryScript.new()
-	return factory.create_manager()
+	var manager := VideoPlayerManagerScript.new()
+	manager.set_backend(GodotVideoBackendScript.new())
+	return manager
 
 func _get_backend_player() -> Node:
 	if _video_surface == null or _video_surface.get_child_count() == 0:

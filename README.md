@@ -42,6 +42,7 @@ The image and video scenes expose web-style fit modes as closely as practical:
 Video validation is intentionally **truth-locked to canonical `.ogv` (Theora)** input.
 The current testbed does not claim `.webm` or `.mp4` playback support.
 Use `.testbed/assets/videos/calm_blue_sea_1.ogv` as the baseline sample clip.
+The proving scene now depends on the stable `AeroVideoPlayerManager` facade from `aerobeat-tool-video-player`, with the real `AeroGodotVideoBackend` injected underneath for truthful backend-path validation.
 
 Renderer-path truth note:
 
