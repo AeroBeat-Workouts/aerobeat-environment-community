@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://uo2r6f7dwfyc"]
 
-[ext_resource type="Script" path="res://scripts/video_test_scene.gd" id="1_video"]
+[ext_resource type="Script" uid="uid://cwbipk1n5are8" path="res://scripts/video_test_scene.gd" id="1_video"]
 
-[node name="VideoTest" type="Control"]
+[node name="VideoTest" type="Control" unique_id=1569455062]
+layout_mode = 3
+anchors_preset = 0
 script = ExtResource("1_video")

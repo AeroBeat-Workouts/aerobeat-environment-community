@@ -8,8 +8,8 @@
       "subfolder": "/"
     },
     // Stable AeroBeat-facing Gaussian splat wrapper.
-    "aerobeat-environment-gaussian-splat": {
-      "url": "git@github.com:AeroBeat-Workouts/aerobeat-environment-gaussian-splat.git",
+    "aerobeat-tool-gaussian-splat-loader": {
+      "url": "git@github.com:AeroBeat-Workouts/aerobeat-tool-gaussian-splat-loader.git",
       "checkout": "main",
       "subfolder": "/"
     },
