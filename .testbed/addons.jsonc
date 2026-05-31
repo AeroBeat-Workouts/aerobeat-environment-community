@@ -35,7 +35,7 @@
     "gdgs": {
       "url": "git@github.com:AeroBeat-Workouts/aerobeat-vendor-gdgs.git",
       "checkout": "main",
-      "subfolder": "/addons/gdgs"
+      "subfolder": "/src"
     },
     // Repo-local tests.
     "gut": {

@@ -28,7 +28,7 @@ func test_manifest_mentions_tool_and_vendor_dependencies() -> void:
 	var file := FileAccess.open(ProjectSettings.globalize_path("res://addons.jsonc"), FileAccess.READ)
 	assert_true(file != null, "addons manifest should exist")
 	var text := file.get_as_text()
-	assert_true(text.contains('"aerobeat-environment-gaussian-splat"'), "Manifest should depend on the AeroBeat splat tool")
+	assert_true(text.contains('"aerobeat-tool-gaussian-splat-loader"'), "Manifest should depend on the AeroBeat splat tool loader")
 	assert_true(text.contains('"aerobeat-tool-core"'), "Manifest should pin the shared playback contract dependency")
 	assert_true(text.contains('"aerobeat-tool-video-player"'), "Manifest should pin the shared playback facade")
 	assert_true(text.contains('"aerobeat-vendor-godot-video"'), "Manifest should pin the Godot video backend")
