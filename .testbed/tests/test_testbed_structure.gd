@@ -32,4 +32,4 @@ func test_manifest_mentions_tool_and_vendor_dependencies() -> void:
 	assert_true(text.contains('"aerobeat-tool-core"'), "Manifest should pin the shared playback contract dependency")
 	assert_true(text.contains('"aerobeat-tool-video-player"'), "Manifest should pin the shared playback facade")
 	assert_true(text.contains('"aerobeat-vendor-godot-video"'), "Manifest should pin the Godot video backend")
-	assert_true(text.contains('"gdgs"'), "Manifest should pin gdgs through the vendor repo")
+	assert_true(text.contains('"aerobeat-vendor-gdgs"'), "Manifest should pin GDGS through the explicit vendor repo addon identity")

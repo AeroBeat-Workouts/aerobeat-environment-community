@@ -32,7 +32,7 @@
     // Honest vendor pin for the raw gdgs plugin payload. This stays routed through
     // the AeroBeat vendor repo rather than upstream directly because GodotEnv does
     // not resolve transitive addon manifests for us.
-    "gdgs": {
+    "aerobeat-vendor-gdgs": {
       "url": "git@github.com:AeroBeat-Workouts/aerobeat-vendor-gdgs.git",
       "checkout": "main",
       "subfolder": "/src"

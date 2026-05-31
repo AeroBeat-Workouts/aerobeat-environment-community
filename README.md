@@ -61,19 +61,17 @@ godot --headless --path . --script addons/gut/gut_cmdln.gd -gdir=res://tests -gi
 ## Clean restore flow for GodotEnv-managed addons
 
 When Godot imports mark files inside `.testbed/addons/` or `.testbed/.addons/` as dirty,
-rerun the canonical delete-first restore flow manually from the repo root:
+rerun the canonical delete-first restore helper from the repo root:
 
 ```bash
-find .testbed/addons -mindepth 1 -maxdepth 1 ! -name .editorconfig -exec rm -rf {} +
-rm -rf .testbed/.addons
-cd .testbed
-godotenv addons install
+./scripts/restore-testbed-addons.sh
 ```
 
-That sequence safely clears the generated GodotEnv install targets first:
+That helper safely clears the generated GodotEnv install targets first:
 
 - `.testbed/addons/*` except `.editorconfig`
 - `.testbed/.addons/`
+- `.testbed/.godot/`
 
 Then it reruns `godotenv addons install` so the testbed comes back in a clean state
-without relying on a repo-local restore helper script.
+without relying on manual deletion tribal knowledge.
