@@ -5,6 +5,10 @@ const ConfigUtils := preload("res://scripts/transform_config.gd")
 const FreeLookCameraScript := preload("res://scripts/free_look_camera.gd")
 const SplatManagerScript := preload("res://addons/aerobeat-tool-gaussian-splat-loader/src/AeroGaussianSplatManager.gd")
 
+const DEFAULT_POSITION := Vector3.ZERO
+const DEFAULT_ROTATION_DEGREES := Vector3.ZERO
+const DEFAULT_SCALE := Vector3.ONE
+
 var _manager
 var _display_root: Node3D
 var _splat_node: Node3D
@@ -116,9 +120,9 @@ func _setup_ui() -> void:
 	_loading_bar.visible = false
 	vbox.add_child(_loading_bar)
 
-	vbox.add_child(_make_vector3_editor("Position", _position_edits, Vector3.ZERO))
-	vbox.add_child(_make_vector3_editor("Scale", _scale_edits, Vector3.ONE))
-	vbox.add_child(_make_vector3_editor("Rotation Degrees", _rotation_edits, Vector3.ZERO))
+	vbox.add_child(_make_vector3_editor("Position", _position_edits, DEFAULT_POSITION))
+	vbox.add_child(_make_vector3_editor("Scale", _scale_edits, DEFAULT_SCALE))
+	vbox.add_child(_make_vector3_editor("Rotation Degrees", _rotation_edits, DEFAULT_ROTATION_DEGREES))
 
 	var apply_button := Button.new()
 	apply_button.text = "Apply transform"
@@ -129,12 +133,12 @@ func _setup_ui() -> void:
 	vbox.add_child(buttons)
 
 	var save_button := Button.new()
-	save_button.text = "Save YAML beside asset"
+	save_button.text = "Save Config"
 	save_button.pressed.connect(_save_config)
 	buttons.add_child(save_button)
 
 	var load_button := Button.new()
-	load_button.text = "Load YAML beside asset"
+	load_button.text = "Load Config"
 	load_button.pressed.connect(_load_config)
 	buttons.add_child(load_button)
 
@@ -204,7 +208,7 @@ func _apply_renderer_support_ui() -> void:
 		_status_label.text = "Visible splat rendering is disabled on this renderer path."
 		_loading_state_label.text = "Renderer path unsupported"
 	else:
-		_status_label.text = "WASD / arrows move. Right-click captures mouse. Esc releases."
+		_status_label.text = "WASD / arrows move. Right-click captures mouse. Esc releases. Selecting a splat auto-loads any sibling .config.yaml transform sidecar."
 
 func _open_rooted_dialog() -> void:
 	if not _can_attempt_render():
@@ -226,6 +230,7 @@ func _load_splat(path: String) -> void:
 		return
 	_current_asset_path = path
 	_path_label.text = path
+	_reset_transform_ui_to_defaults()
 	_clear_current_splat()
 	_status_label.text = "Starting async load..."
 	_debug_label.text = ""
@@ -268,9 +273,9 @@ func _apply_transform_from_ui() -> void:
 		}
 	})
 	var transform: Dictionary = config.get("transform", {})
-	_splat_node.position = _vector3_from_variant(transform.get("position", Vector3.ZERO), Vector3.ZERO)
-	_splat_node.scale = _vector3_from_variant(transform.get("scale", Vector3.ONE), Vector3.ONE)
-	_splat_node.rotation_degrees = _vector3_from_variant(transform.get("rotation_degrees", Vector3.ZERO), Vector3.ZERO)
+	_splat_node.position = _vector3_from_variant(transform.get("position", DEFAULT_POSITION), DEFAULT_POSITION)
+	_splat_node.scale = _vector3_from_variant(transform.get("scale", DEFAULT_SCALE), DEFAULT_SCALE)
+	_splat_node.rotation_degrees = _vector3_from_variant(transform.get("rotation_degrees", DEFAULT_ROTATION_DEGREES), DEFAULT_ROTATION_DEGREES)
 
 func _save_config() -> void:
 	if _current_asset_path.is_empty() or _splat_node == null:
@@ -293,11 +298,16 @@ func _apply_loaded_config_result(result: Dictionary) -> void:
 		_status_label.text = "No sibling .config.yaml sidecar found for this splat."
 		return
 	var transform: Dictionary = result.get("config", {}).get("transform", {})
-	_set_line_edits(_position_edits, _vector3_from_variant(transform.get("position", Vector3.ZERO), Vector3.ZERO))
-	_set_line_edits(_scale_edits, _vector3_from_variant(transform.get("scale", Vector3.ONE), Vector3.ONE))
-	_set_line_edits(_rotation_edits, _vector3_from_variant(transform.get("rotation_degrees", Vector3.ZERO), Vector3.ZERO))
+	_set_line_edits(_position_edits, _vector3_from_variant(transform.get("position", DEFAULT_POSITION), DEFAULT_POSITION))
+	_set_line_edits(_scale_edits, _vector3_from_variant(transform.get("scale", DEFAULT_SCALE), DEFAULT_SCALE))
+	_set_line_edits(_rotation_edits, _vector3_from_variant(transform.get("rotation_degrees", DEFAULT_ROTATION_DEGREES), DEFAULT_ROTATION_DEGREES))
 	_apply_transform_from_ui()
 	_status_label.text = "Loaded sibling .config.yaml sidecar for the splat asset."
+
+func _reset_transform_ui_to_defaults() -> void:
+	_set_line_edits(_position_edits, DEFAULT_POSITION)
+	_set_line_edits(_rotation_edits, DEFAULT_ROTATION_DEGREES)
+	_set_line_edits(_scale_edits, DEFAULT_SCALE)
 
 func _vector3_from_edits(edits: Array[LineEdit]) -> Vector3:
 	return Vector3(float(edits[0].text), float(edits[1].text), float(edits[2].text))

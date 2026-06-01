@@ -3,7 +3,14 @@ extends Node3D
 const Paths := preload("res://scripts/testbed_paths.gd")
 const ConfigUtils := preload("res://scripts/transform_config.gd")
 const FreeLookCameraScript := preload("res://scripts/free_look_camera.gd")
+const AeroGLTFLoaderScript := preload("res://addons/aerobeat-tool-gltf-loader/src/AeroGLTFLoader.gd")
 
+const DEFAULT_POSITION := Vector3.ZERO
+const DEFAULT_ROTATION_DEGREES := Vector3.ZERO
+const DEFAULT_SCALE := Vector3.ONE
+
+var _gltf_loader
+var _current_load_result: Dictionary = {}
 var _display_root: Node3D
 var _loaded_instance: Node3D
 var _current_asset_path: String = ""
@@ -16,6 +23,7 @@ var _scale_edits: Array[LineEdit] = []
 var _rotation_edits: Array[LineEdit] = []
 
 func _ready() -> void:
+	_gltf_loader = AeroGLTFLoaderScript.new()
 	_setup_3d()
 	_setup_ui()
 
@@ -76,9 +84,9 @@ func _setup_ui() -> void:
 	_status_label.text = "WASD / arrows move. Right-click captures mouse. Esc releases. Selecting a GLB auto-loads any sibling .config.yaml transform sidecar."
 	vbox.add_child(_status_label)
 
-	vbox.add_child(_make_vector3_editor("Position", _position_edits, Vector3.ZERO))
-	vbox.add_child(_make_vector3_editor("Scale", _scale_edits, Vector3.ONE))
-	vbox.add_child(_make_vector3_editor("Rotation Degrees", _rotation_edits, Vector3.ZERO))
+	vbox.add_child(_make_vector3_editor("Position", _position_edits, DEFAULT_POSITION))
+	vbox.add_child(_make_vector3_editor("Scale", _scale_edits, DEFAULT_SCALE))
+	vbox.add_child(_make_vector3_editor("Rotation Degrees", _rotation_edits, DEFAULT_ROTATION_DEGREES))
 
 	var apply_button := Button.new()
 	apply_button.text = "Apply transform"
@@ -89,12 +97,12 @@ func _setup_ui() -> void:
 	vbox.add_child(buttons)
 
 	var save_button := Button.new()
-	save_button.text = "Save YAML beside asset"
+	save_button.text = "Save Config"
 	save_button.pressed.connect(_save_config)
 	buttons.add_child(save_button)
 
 	var load_button := Button.new()
-	load_button.text = "Load YAML beside asset"
+	load_button.text = "Load Config"
 	load_button.pressed.connect(_load_config)
 	buttons.add_child(load_button)
 
@@ -141,25 +149,34 @@ func _open_file_dialog() -> void:
 func _load_glb(path: String) -> void:
 	_current_asset_path = path
 	_path_label.text = path
-	if _loaded_instance != null:
-		_loaded_instance.queue_free()
-		_loaded_instance = null
+	_reset_transform_ui_to_defaults()
+	_unload_current_glb()
+
 	var local_path := Paths.localize_if_possible(path)
-	var resource = ResourceLoader.load(local_path)
-	if resource == null:
-		_status_label.text = "Failed to load GLB resource: %s" % path
+	var request := {
+		"instance": {
+			"name": "GLBPreviewRoot",
+			"transform": ConfigUtils.normalize_transform_config(get_current_config_payload()).get("transform", {})
+		}
+	}
+	var result: Dictionary = _gltf_loader.load_scene_instance_from_path(local_path, request)
+	if not result.get("ok", false):
+		_status_label.text = String(result.get("message", "Failed to load GLB through AeroGLTFLoader"))
 		return
-	if resource is PackedScene:
-		var instance = resource.instantiate()
-		if instance is Node3D:
-			_loaded_instance = instance
-		else:
-			var wrapper := Node3D.new()
-			wrapper.add_child(instance)
-			_loaded_instance = wrapper
+
+	_current_load_result = result.duplicate(true)
+	var instance_root: Variant = result.get("instance_root", null)
+	if instance_root is Node3D:
+		_loaded_instance = instance_root
+	elif instance_root is Node:
+		var wrapper := Node3D.new()
+		wrapper.name = "GLBPreviewRoot"
+		wrapper.add_child(instance_root)
+		_loaded_instance = wrapper
 	else:
-		_status_label.text = "Loaded resource is not a PackedScene: %s" % local_path
+		_status_label.text = "AeroGLTFLoader did not return a transformable instance root for: %s" % local_path
 		return
+
 	_display_root.add_child(_loaded_instance)
 	var config_result := ConfigUtils.load_sidecar(_current_asset_path, "glb")
 	if config_result.get("has_config", false):
@@ -179,9 +196,9 @@ func _apply_transform_from_ui() -> void:
 		}
 	})
 	var transform: Dictionary = config.get("transform", {})
-	_loaded_instance.position = _vector3_from_variant(transform.get("position", Vector3.ZERO), Vector3.ZERO)
-	_loaded_instance.rotation_degrees = _vector3_from_variant(transform.get("rotation_degrees", Vector3.ZERO), Vector3.ZERO)
-	_loaded_instance.scale = _vector3_from_variant(transform.get("scale", Vector3.ONE), Vector3.ONE)
+	_loaded_instance.position = _vector3_from_variant(transform.get("position", DEFAULT_POSITION), DEFAULT_POSITION)
+	_loaded_instance.rotation_degrees = _vector3_from_variant(transform.get("rotation_degrees", DEFAULT_ROTATION_DEGREES), DEFAULT_ROTATION_DEGREES)
+	_loaded_instance.scale = _vector3_from_variant(transform.get("scale", DEFAULT_SCALE), DEFAULT_SCALE)
 
 func _save_config() -> void:
 	if _current_asset_path.is_empty():
@@ -204,11 +221,22 @@ func _apply_loaded_config_result(result: Dictionary) -> void:
 		_status_label.text = "No sibling .config.yaml sidecar found for this GLB."
 		return
 	var transform: Dictionary = result.get("config", {}).get("transform", {})
-	_set_line_edits(_position_edits, _vector3_from_variant(transform.get("position", Vector3.ZERO), Vector3.ZERO))
-	_set_line_edits(_scale_edits, _vector3_from_variant(transform.get("scale", Vector3.ONE), Vector3.ONE))
-	_set_line_edits(_rotation_edits, _vector3_from_variant(transform.get("rotation_degrees", Vector3.ZERO), Vector3.ZERO))
+	_set_line_edits(_position_edits, _vector3_from_variant(transform.get("position", DEFAULT_POSITION), DEFAULT_POSITION))
+	_set_line_edits(_scale_edits, _vector3_from_variant(transform.get("scale", DEFAULT_SCALE), DEFAULT_SCALE))
+	_set_line_edits(_rotation_edits, _vector3_from_variant(transform.get("rotation_degrees", DEFAULT_ROTATION_DEGREES), DEFAULT_ROTATION_DEGREES))
 	_apply_transform_from_ui()
 	_status_label.text = "Loaded sibling .config.yaml sidecar for the GLB asset."
+
+func _reset_transform_ui_to_defaults() -> void:
+	_set_line_edits(_position_edits, DEFAULT_POSITION)
+	_set_line_edits(_rotation_edits, DEFAULT_ROTATION_DEGREES)
+	_set_line_edits(_scale_edits, DEFAULT_SCALE)
+
+func _unload_current_glb() -> void:
+	if not _current_load_result.is_empty():
+		_gltf_loader.unload_result(_current_load_result)
+		_current_load_result = {}
+	_loaded_instance = null
 
 func _vector3_from_edits(edits: Array[LineEdit]) -> Vector3:
 	return Vector3(float(edits[0].text), float(edits[1].text), float(edits[2].text))

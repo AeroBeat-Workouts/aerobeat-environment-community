@@ -57,6 +57,13 @@ func test_load_yaml_reports_truthful_missing_config() -> void:
 	assert_false(load_result.get("has_config", true), "Missing sidecars should stay truthfully absent")
 	assert_eq(load_result.get("config", {}), {})
 
+func test_normalize_transform_config_defaults_to_visible_identity_values() -> void:
+	var normalized := ConfigUtils.normalize_transform_config({})
+	var transform: Dictionary = normalized.get("transform", {})
+	assert_eq(transform.get("position"), [0.0, 0.0, 0.0])
+	assert_eq(transform.get("rotation_degrees"), [0.0, 0.0, 0.0])
+	assert_eq(transform.get("scale"), [1.0, 1.0, 1.0])
+
 func test_normalize_transform_config_accepts_legacy_shape_without_re_emitting_rotation() -> void:
 	var normalized := ConfigUtils.normalize_transform_config({
 		"center": [9, 8, 7],
