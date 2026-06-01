@@ -7,17 +7,30 @@
       "checkout": "main",
       "subfolder": "/"
     },
-    // Stable AeroBeat-facing Gaussian splat wrapper.
+    "aerobeat-tool-core": {
+      "url": "git@github.com:AeroBeat-Workouts/aerobeat-tool-core.git",
+      "checkout": "main",
+      "subfolder": "/"
+    },
     "aerobeat-tool-gaussian-splat-loader": {
       "url": "git@github.com:AeroBeat-Workouts/aerobeat-tool-gaussian-splat-loader.git",
       "checkout": "main",
       "subfolder": "/"
     },
-    // Video testbed playback now routes through the shared tool facade + Godot backend.
-    "aerobeat-tool-core": {
-      "url": "git@github.com:AeroBeat-Workouts/aerobeat-tool-core.git",
+    "aerobeat-vendor-gdgs": {
+      "url": "git@github.com:AeroBeat-Workouts/aerobeat-vendor-gdgs.git",
+      "checkout": "main",
+      "subfolder": "/src"
+    },
+    "aerobeat-tool-gltf-loader": {
+      "url": "git@github.com:AeroBeat-Workouts/aerobeat-tool-gltf-loader.git",
       "checkout": "main",
       "subfolder": "/"
+    },
+    "aerobeat-vendor-godot-gltf": {
+      "url": "git@github.com:AeroBeat-Workouts/aerobeat-vendor-godot-gltf.git",
+      "checkout": "main",
+      "subfolder": "/src"
     },
     "aerobeat-tool-video-player": {
       "url": "git@github.com:AeroBeat-Workouts/aerobeat-tool-video-player.git",
@@ -29,13 +42,15 @@
       "checkout": "main",
       "subfolder": "/"
     },
-    // Honest vendor pin for the raw gdgs plugin payload. This stays routed through
-    // the AeroBeat vendor repo rather than upstream directly because GodotEnv does
-    // not resolve transitive addon manifests for us.
-    "aerobeat-vendor-gdgs": {
-      "url": "git@github.com:AeroBeat-Workouts/aerobeat-vendor-gdgs.git",
+    "aerobeat-tool-image-loader": {
+      "url": "git@github.com:AeroBeat-Workouts/aerobeat-tool-image-loader.git",
       "checkout": "main",
-      "subfolder": "/src"
+      "subfolder": "/"
+    },
+    "aerobeat-vendor-godot-image": {
+      "url": "git@github.com:AeroBeat-Workouts/aerobeat-vendor-godot-image.git",
+      "checkout": "main",
+      "subfolder": "/"
     },
     // Repo-local tests.
     "gut": {
