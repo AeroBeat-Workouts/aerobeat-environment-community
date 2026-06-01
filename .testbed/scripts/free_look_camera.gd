@@ -27,6 +27,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		rotation = Vector3(_pitch, _yaw, 0.0)
 
 func _process(delta: float) -> void:
+	if not _mouse_captured:
+		return
 	var move := Vector3.ZERO
 	if Input.is_key_pressed(KEY_W) or Input.is_action_pressed("ui_up"):
 		move -= transform.basis.z

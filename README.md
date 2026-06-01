@@ -24,7 +24,9 @@ Within each media bucket, every shipped asset now lives in its own lowercase fol
 The GLB and splat scenes expose:
 
 - a file picker rooted to the matching asset folder
-- free-fly camera controls (`WASD`, arrows, mouse look, `Esc` to release mouse)
+- scene-level live transform controls for the loaded object: `WASD` move on X/Z, `Q` up, `E` down, `Shift` boosts movement, and `Up`/`Down` adjust uniform scale with the same boost modifier
+- a right-click free-look camera (`mouse look`, `Esc` to release mouse) that stays out of the way until explicitly captured
+- a left-panel rotation gizmo below the transform inspector that supports click-drag local-axis rotation like Godot's inspector
 - left-panel YAML sidecar save/load beside the selected asset
 - auto-load of sibling `<asset-stem>.config.yaml` files when an asset is selected
 - shared transform contract fields: `transform.position`, `transform.rotation_degrees`, `transform.scale`

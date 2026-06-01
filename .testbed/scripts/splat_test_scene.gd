@@ -3,11 +3,16 @@ extends Node3D
 const Paths := preload("res://scripts/testbed_paths.gd")
 const ConfigUtils := preload("res://scripts/transform_config.gd")
 const FreeLookCameraScript := preload("res://scripts/free_look_camera.gd")
+const RotationGizmoScript := preload("res://scripts/rotation_gizmo.gd")
 const SplatManagerScript := preload("res://addons/aerobeat-tool-gaussian-splat-loader/src/AeroGaussianSplatManager.gd")
 
 const DEFAULT_POSITION := Vector3.ZERO
 const DEFAULT_ROTATION_DEGREES := Vector3.ZERO
 const DEFAULT_SCALE := Vector3.ONE
+const LIVE_MOVE_SPEED := 2.0
+const LIVE_FAST_MULTIPLIER := 4.0
+const LIVE_SCALE_RATE := 0.75
+const LIVE_MIN_SCALE := 0.05
 
 var _manager
 var _display_root: Node3D
@@ -26,6 +31,7 @@ var _any_button: Button
 var _position_edits: Array[LineEdit] = []
 var _scale_edits: Array[LineEdit] = []
 var _rotation_edits: Array[LineEdit] = []
+var _rotation_gizmo: TestbedRotationGizmo
 var _renderer_support_status: Dictionary = {}
 
 func _ready() -> void:
@@ -44,6 +50,12 @@ func _ready() -> void:
 		"phase": "idle",
 		"status": "Idle"
 	})
+	set_process(true)
+
+func _process(delta: float) -> void:
+	if not _is_live_transform_input_allowed():
+		return
+	_apply_live_transform_delta(_read_live_move_input(), _read_live_scale_input(), delta, Input.is_key_pressed(KEY_SHIFT))
 
 func _setup_3d() -> void:
 	_display_root = Node3D.new()
@@ -73,7 +85,7 @@ func _setup_ui() -> void:
 	panel.offset_left = 16
 	panel.offset_top = 16
 	panel.offset_right = 400
-	panel.offset_bottom = 720
+	panel.offset_bottom = 820
 	layer.add_child(panel)
 
 	var vbox := VBoxContainer.new()
@@ -104,7 +116,7 @@ func _setup_ui() -> void:
 
 	_status_label = Label.new()
 	_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_status_label.text = "WASD / arrows move. Right-click captures mouse. Esc releases. Selecting a splat auto-loads any sibling .config.yaml transform sidecar."
+	_status_label.text = "WASD move the loaded object, Q/E move vertically, Shift boosts movement and scale, Up/Down scale the object. Right-click captures the free-look camera; Esc releases it. Selecting a splat auto-loads any sibling .config.yaml transform sidecar."
 	vbox.add_child(_status_label)
 
 	_loading_state_label = Label.new()
@@ -123,6 +135,20 @@ func _setup_ui() -> void:
 	vbox.add_child(_make_vector3_editor("Position", _position_edits, DEFAULT_POSITION))
 	vbox.add_child(_make_vector3_editor("Scale", _scale_edits, DEFAULT_SCALE))
 	vbox.add_child(_make_vector3_editor("Rotation Degrees", _rotation_edits, DEFAULT_ROTATION_DEGREES))
+
+	var gizmo_title := Label.new()
+	gizmo_title.text = "Rotation Gizmo"
+	vbox.add_child(gizmo_title)
+
+	var gizmo_hint := Label.new()
+	gizmo_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	gizmo_hint.text = "Drag the colored rings to rotate around the local X/Y/Z axes like Godot's inspector control."
+	vbox.add_child(gizmo_hint)
+
+	_rotation_gizmo = RotationGizmoScript.new()
+	_rotation_gizmo.custom_minimum_size = Vector2(220.0, 220.0)
+	_rotation_gizmo.rotation_changed.connect(_on_rotation_gizmo_changed)
+	vbox.add_child(_rotation_gizmo)
 
 	var apply_button := Button.new()
 	apply_button.text = "Apply transform"
@@ -172,9 +198,10 @@ func get_current_sidecar_path() -> String:
 	return Paths.sidecar_path_for(_current_asset_path)
 
 func get_current_config_payload() -> Dictionary:
-	if _splat_node == null:
+	var target := _get_transform_target()
+	if target == null:
 		return ConfigUtils.build_transform_config(_vector3_from_edits(_position_edits), _vector3_from_edits(_rotation_edits), _vector3_from_edits(_scale_edits))
-	return ConfigUtils.build_transform_config(_splat_node.position, _splat_node.rotation_degrees, _splat_node.scale)
+	return ConfigUtils.build_transform_config(target.position, target.rotation_degrees, target.scale)
 
 func save_current_config() -> Dictionary:
 	var result := ConfigUtils.save_sidecar(_current_asset_path, "splat", get_current_config_payload())
@@ -208,7 +235,7 @@ func _apply_renderer_support_ui() -> void:
 		_status_label.text = "Visible splat rendering is disabled on this renderer path."
 		_loading_state_label.text = "Renderer path unsupported"
 	else:
-		_status_label.text = "WASD / arrows move. Right-click captures mouse. Esc releases. Selecting a splat auto-loads any sibling .config.yaml transform sidecar."
+		_status_label.text = "WASD move the loaded object, Q/E move vertically, Shift boosts movement and scale, Up/Down scale the object. Right-click captures the free-look camera; Esc releases it. Selecting a splat auto-loads any sibling .config.yaml transform sidecar."
 
 func _open_rooted_dialog() -> void:
 	if not _can_attempt_render():
@@ -263,7 +290,10 @@ func _load_splat(path: String) -> void:
 	})
 
 func _apply_transform_from_ui() -> void:
-	if _splat_node == null:
+	var target := _get_transform_target()
+	if target == null:
+		if _rotation_gizmo != null:
+			_rotation_gizmo.set_gizmo_rotation_degrees(_vector3_from_edits(_rotation_edits))
 		return
 	var config := ConfigUtils.normalize_transform_config({
 		"transform": {
@@ -272,13 +302,11 @@ func _apply_transform_from_ui() -> void:
 			"scale": _vector3_to_array(_vector3_from_edits(_scale_edits))
 		}
 	})
-	var transform: Dictionary = config.get("transform", {})
-	_splat_node.position = _vector3_from_variant(transform.get("position", DEFAULT_POSITION), DEFAULT_POSITION)
-	_splat_node.scale = _vector3_from_variant(transform.get("scale", DEFAULT_SCALE), DEFAULT_SCALE)
-	_splat_node.rotation_degrees = _vector3_from_variant(transform.get("rotation_degrees", DEFAULT_ROTATION_DEGREES), DEFAULT_ROTATION_DEGREES)
+	_apply_transform_dictionary(target, config.get("transform", {}))
+	_sync_transform_ui_from_target()
 
 func _save_config() -> void:
-	if _current_asset_path.is_empty() or _splat_node == null:
+	if _current_asset_path.is_empty() or _get_transform_target() == null:
 		_status_label.text = "Choose a splat first."
 		return
 	_apply_transform_from_ui()
@@ -308,6 +336,94 @@ func _reset_transform_ui_to_defaults() -> void:
 	_set_line_edits(_position_edits, DEFAULT_POSITION)
 	_set_line_edits(_rotation_edits, DEFAULT_ROTATION_DEGREES)
 	_set_line_edits(_scale_edits, DEFAULT_SCALE)
+	if _rotation_gizmo != null:
+		_rotation_gizmo.set_gizmo_rotation_degrees(DEFAULT_ROTATION_DEGREES)
+
+func _get_transform_target() -> Node3D:
+	return _splat_node
+
+func _sync_transform_ui_from_target() -> void:
+	var target := _get_transform_target()
+	if target == null:
+		return
+	_set_line_edits(_position_edits, target.position)
+	_set_line_edits(_rotation_edits, target.rotation_degrees)
+	_set_line_edits(_scale_edits, target.scale)
+	if _rotation_gizmo != null:
+		_rotation_gizmo.set_gizmo_rotation_degrees(target.rotation_degrees)
+
+func _apply_transform_dictionary(target: Node3D, transform: Dictionary) -> void:
+	target.position = _vector3_from_variant(transform.get("position", DEFAULT_POSITION), DEFAULT_POSITION)
+	target.rotation_degrees = _vector3_from_variant(transform.get("rotation_degrees", DEFAULT_ROTATION_DEGREES), DEFAULT_ROTATION_DEGREES)
+	target.scale = _sanitize_scale(_vector3_from_variant(transform.get("scale", DEFAULT_SCALE), DEFAULT_SCALE))
+
+func _apply_live_transform_delta(move_input: Vector3, scale_input: float, delta: float, fast_mode: bool) -> bool:
+	var target := _get_transform_target()
+	if target == null:
+		return false
+	var changed := false
+	if move_input != Vector3.ZERO:
+		var move_speed := LIVE_MOVE_SPEED * (LIVE_FAST_MULTIPLIER if fast_mode else 1.0)
+		target.position += move_input.normalized() * move_speed * delta
+		changed = true
+	if not is_zero_approx(scale_input):
+		var scale_step := LIVE_SCALE_RATE * (LIVE_FAST_MULTIPLIER if fast_mode else 1.0) * scale_input * delta
+		target.scale = _sanitize_scale(target.scale + Vector3.ONE * scale_step)
+		changed = true
+	if changed:
+		_sync_transform_ui_from_target()
+	return changed
+
+func _read_live_move_input() -> Vector3:
+	var move := Vector3.ZERO
+	if Input.is_key_pressed(KEY_W):
+		move.z -= 1.0
+	if Input.is_key_pressed(KEY_S):
+		move.z += 1.0
+	if Input.is_key_pressed(KEY_A):
+		move.x -= 1.0
+	if Input.is_key_pressed(KEY_D):
+		move.x += 1.0
+	if Input.is_key_pressed(KEY_Q):
+		move.y += 1.0
+	if Input.is_key_pressed(KEY_E):
+		move.y -= 1.0
+	return move
+
+func _read_live_scale_input() -> float:
+	var scale_input := 0.0
+	if Input.is_key_pressed(KEY_UP):
+		scale_input += 1.0
+	if Input.is_key_pressed(KEY_DOWN):
+		scale_input -= 1.0
+	return scale_input
+
+func _is_live_transform_input_allowed() -> bool:
+	if _get_transform_target() == null:
+		return false
+	if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
+		return false
+	if (_rooted_dialog != null and _rooted_dialog.visible) or (_any_dialog != null and _any_dialog.visible):
+		return false
+	if _rotation_gizmo != null and _rotation_gizmo.is_dragging():
+		return false
+	var focus_owner := get_viewport().gui_get_focus_owner()
+	return focus_owner == null or not (focus_owner is LineEdit)
+
+func _on_rotation_gizmo_changed(rotation_degrees: Vector3) -> void:
+	var target := _get_transform_target()
+	_set_line_edits(_rotation_edits, rotation_degrees)
+	if target == null:
+		return
+	target.rotation_degrees = rotation_degrees
+	_sync_transform_ui_from_target()
+
+func _sanitize_scale(value: Vector3) -> Vector3:
+	return Vector3(
+		maxf(value.x, LIVE_MIN_SCALE),
+		maxf(value.y, LIVE_MIN_SCALE),
+		maxf(value.z, LIVE_MIN_SCALE)
+	)
 
 func _vector3_from_edits(edits: Array[LineEdit]) -> Vector3:
 	return Vector3(float(edits[0].text), float(edits[1].text), float(edits[2].text))
