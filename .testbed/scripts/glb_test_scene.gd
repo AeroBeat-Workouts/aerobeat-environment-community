@@ -26,7 +26,9 @@ var _world_environment: WorldEnvironment
 var _position_edits: Array[LineEdit] = []
 var _scale_edits: Array[LineEdit] = []
 var _rotation_edits: Array[LineEdit] = []
-var _rotation_gizmo: TestbedRotationGizmo
+# Keep this parse-safe for hidden .testbed consumers: rely on the preloaded
+# script resource instead of the global class_name symbol at parse time.
+var _rotation_gizmo
 
 func _ready() -> void:
 	_gltf_loader = AeroGLTFLoaderScript.new()
