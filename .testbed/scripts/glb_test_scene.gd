@@ -11,7 +11,7 @@ var _status_label: Label
 var _path_label: Label
 var _file_dialog: FileDialog
 var _world_environment: WorldEnvironment
-var _center_edits: Array[LineEdit] = []
+var _position_edits: Array[LineEdit] = []
 var _scale_edits: Array[LineEdit] = []
 var _rotation_edits: Array[LineEdit] = []
 
@@ -73,12 +73,12 @@ func _setup_ui() -> void:
 
 	_status_label = Label.new()
 	_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_status_label.text = "WASD / arrows move. Right-click captures mouse. Esc releases."
+	_status_label.text = "WASD / arrows move. Right-click captures mouse. Esc releases. Selecting a GLB auto-loads any sibling .config.yaml transform sidecar."
 	vbox.add_child(_status_label)
 
-	vbox.add_child(_make_vector3_editor("Center", _center_edits, Vector3.ZERO))
+	vbox.add_child(_make_vector3_editor("Position", _position_edits, Vector3.ZERO))
 	vbox.add_child(_make_vector3_editor("Scale", _scale_edits, Vector3.ONE))
-	vbox.add_child(_make_vector3_editor("Rotation", _rotation_edits, Vector3.ZERO))
+	vbox.add_child(_make_vector3_editor("Rotation Degrees", _rotation_edits, Vector3.ZERO))
 
 	var apply_button := Button.new()
 	apply_button.text = "Apply transform"
@@ -89,12 +89,12 @@ func _setup_ui() -> void:
 	vbox.add_child(buttons)
 
 	var save_button := Button.new()
-	save_button.text = "Save JSON beside asset"
+	save_button.text = "Save YAML beside asset"
 	save_button.pressed.connect(_save_config)
 	buttons.add_child(save_button)
 
 	var load_button := Button.new()
-	load_button.text = "Load JSON beside asset"
+	load_button.text = "Load YAML beside asset"
 	load_button.pressed.connect(_load_config)
 	buttons.add_child(load_button)
 
@@ -106,6 +106,19 @@ func _setup_ui() -> void:
 	_file_dialog.filters = PackedStringArray(["*.glb ; GLB scenes"])
 	_file_dialog.file_selected.connect(_load_glb)
 	layer.add_child(_file_dialog)
+
+func get_current_sidecar_path() -> String:
+	return Paths.sidecar_path_for(_current_asset_path)
+
+func get_current_config_payload() -> Dictionary:
+	if _loaded_instance == null:
+		return ConfigUtils.build_transform_config(_vector3_from_edits(_position_edits), _vector3_from_edits(_rotation_edits), _vector3_from_edits(_scale_edits))
+	return ConfigUtils.build_transform_config(_loaded_instance.position, _loaded_instance.rotation_degrees, _loaded_instance.scale)
+
+func save_current_config() -> Dictionary:
+	var result := ConfigUtils.save_sidecar(_current_asset_path, "glb", get_current_config_payload())
+	_status_label.text = "Saved %s" % String(result.get("path", get_current_sidecar_path())) if result.get("ok", false) else String(result.get("message", "Save failed"))
+	return result
 
 func _make_vector3_editor(label_text: String, target: Array[LineEdit], defaults: Vector3) -> Control:
 	var wrapper := VBoxContainer.new()
@@ -148,50 +161,69 @@ func _load_glb(path: String) -> void:
 		_status_label.text = "Loaded resource is not a PackedScene: %s" % local_path
 		return
 	_display_root.add_child(_loaded_instance)
-	_apply_transform_from_ui()
-	_status_label.text = "Loaded GLB. Save/load writes JSON beside the asset."
+	var config_result := ConfigUtils.load_sidecar(_current_asset_path, "glb")
+	if config_result.get("has_config", false):
+		_apply_loaded_config_result(config_result)
+	else:
+		_apply_transform_from_ui()
+		_status_label.text = "Loaded GLB with no sibling .config.yaml sidecar."
 
 func _apply_transform_from_ui() -> void:
 	if _loaded_instance == null:
 		return
-	var config := ConfigUtils.parse_config({
-		"center": _line_edits_to_array(_center_edits),
-		"scale": _line_edits_to_array(_scale_edits),
-		"rotation": _line_edits_to_array(_rotation_edits)
+	var config := ConfigUtils.normalize_transform_config({
+		"transform": {
+			"position": _vector3_to_array(_vector3_from_edits(_position_edits)),
+			"rotation_degrees": _vector3_to_array(_vector3_from_edits(_rotation_edits)),
+			"scale": _vector3_to_array(_vector3_from_edits(_scale_edits))
+		}
 	})
-	_loaded_instance.position = config["center"]
-	_loaded_instance.scale = config["scale"]
-	_loaded_instance.rotation_degrees = config["rotation"]
+	var transform: Dictionary = config.get("transform", {})
+	_loaded_instance.position = _vector3_from_variant(transform.get("position", Vector3.ZERO), Vector3.ZERO)
+	_loaded_instance.rotation_degrees = _vector3_from_variant(transform.get("rotation_degrees", Vector3.ZERO), Vector3.ZERO)
+	_loaded_instance.scale = _vector3_from_variant(transform.get("scale", Vector3.ONE), Vector3.ONE)
 
 func _save_config() -> void:
 	if _current_asset_path.is_empty():
 		_status_label.text = "Choose a GLB first."
 		return
 	_apply_transform_from_ui()
-	var config_path := Paths.sidecar_path_for(_current_asset_path)
-	var payload := ConfigUtils.build_config(_loaded_instance.position, _loaded_instance.scale, _loaded_instance.rotation_degrees)
-	var result := ConfigUtils.save_json(config_path, payload)
-	_status_label.text = "Saved %s" % result.get("path", config_path) if result.get("ok", false) else result.get("message", "Save failed")
+	save_current_config()
 
 func _load_config() -> void:
 	if _current_asset_path.is_empty():
 		_status_label.text = "Choose a GLB first."
 		return
-	var result := ConfigUtils.load_json(Paths.sidecar_path_for(_current_asset_path))
-	if not result.get("ok", false):
-		_status_label.text = result.get("message", "Load failed")
-		return
-	var config: Dictionary = result["config"]
-	_set_line_edits(_center_edits, config["center"])
-	_set_line_edits(_scale_edits, config["scale"])
-	_set_line_edits(_rotation_edits, config["rotation"])
-	_apply_transform_from_ui()
-	_status_label.text = "Loaded JSON beside the GLB asset."
+	_apply_loaded_config_result(ConfigUtils.load_sidecar(_current_asset_path, "glb"))
 
-func _line_edits_to_array(edits: Array[LineEdit]) -> Array:
-	return [float(edits[0].text), float(edits[1].text), float(edits[2].text)]
+func _apply_loaded_config_result(result: Dictionary) -> void:
+	if not result.get("ok", false):
+		_status_label.text = String(result.get("message", "Load failed"))
+		return
+	if not result.get("has_config", false):
+		_status_label.text = "No sibling .config.yaml sidecar found for this GLB."
+		return
+	var transform: Dictionary = result.get("config", {}).get("transform", {})
+	_set_line_edits(_position_edits, _vector3_from_variant(transform.get("position", Vector3.ZERO), Vector3.ZERO))
+	_set_line_edits(_scale_edits, _vector3_from_variant(transform.get("scale", Vector3.ONE), Vector3.ONE))
+	_set_line_edits(_rotation_edits, _vector3_from_variant(transform.get("rotation_degrees", Vector3.ZERO), Vector3.ZERO))
+	_apply_transform_from_ui()
+	_status_label.text = "Loaded sibling .config.yaml sidecar for the GLB asset."
+
+func _vector3_from_edits(edits: Array[LineEdit]) -> Vector3:
+	return Vector3(float(edits[0].text), float(edits[1].text), float(edits[2].text))
 
 func _set_line_edits(edits: Array[LineEdit], value: Vector3) -> void:
 	edits[0].text = str(value.x)
 	edits[1].text = str(value.y)
 	edits[2].text = str(value.z)
+
+func _vector3_to_array(value: Vector3) -> Array:
+	return [value.x, value.y, value.z]
+
+func _vector3_from_variant(value: Variant, fallback: Vector3) -> Vector3:
+	if value is Array and value.size() >= 3:
+		return Vector3(float(value[0]), float(value[1]), float(value[2]))
+	if value is Dictionary:
+		return Vector3(float(value.get("x", fallback.x)), float(value.get("y", fallback.y)), float(value.get("z", fallback.z)))
+	return fallback

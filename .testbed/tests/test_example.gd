@@ -14,7 +14,8 @@ func _read_repo_file(relative_path: String) -> String:
 func test_readme_documents_testbed_scope() -> void:
 	var readme_text := _read_repo_file(README_PATH)
 	assert_true(readme_text.contains("image, video, GLB, and Gaussian splat"), "README should describe the four test surfaces")
-	assert_true(readme_text.contains("center"), "README should document shared config fields")
+	assert_true(readme_text.contains("media.fit_mode"), "README should document shared config contract fields")
+	assert_true(readme_text.contains("transform.rotation_degrees"), "README should document shared transform contract fields")
 	assert_true(readme_text.contains("arbitrary local filesystem loading outside `res://`"), "README should mention arbitrary local splat loading")
 	assert_true(readme_text.contains("Renderer-path truth note:"), "README should document renderer-path truth for splats")
 	assert_true(readme_text.contains("Forward+ / Vulkan can still crash in the GDGS compositor"), "README should truth-lock the current Forward+ / Vulkan validation warning")

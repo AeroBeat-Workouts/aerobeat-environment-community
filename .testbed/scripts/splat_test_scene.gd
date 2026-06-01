@@ -19,7 +19,7 @@ var _rooted_dialog: FileDialog
 var _any_dialog: FileDialog
 var _pick_button: Button
 var _any_button: Button
-var _center_edits: Array[LineEdit] = []
+var _position_edits: Array[LineEdit] = []
 var _scale_edits: Array[LineEdit] = []
 var _rotation_edits: Array[LineEdit] = []
 var _renderer_support_status: Dictionary = {}
@@ -100,7 +100,7 @@ func _setup_ui() -> void:
 
 	_status_label = Label.new()
 	_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_status_label.text = "WASD / arrows move. Right-click captures mouse. Esc releases."
+	_status_label.text = "WASD / arrows move. Right-click captures mouse. Esc releases. Selecting a splat auto-loads any sibling .config.yaml transform sidecar."
 	vbox.add_child(_status_label)
 
 	_loading_state_label = Label.new()
@@ -116,9 +116,9 @@ func _setup_ui() -> void:
 	_loading_bar.visible = false
 	vbox.add_child(_loading_bar)
 
-	vbox.add_child(_make_vector3_editor("Center", _center_edits, Vector3.ZERO))
+	vbox.add_child(_make_vector3_editor("Position", _position_edits, Vector3.ZERO))
 	vbox.add_child(_make_vector3_editor("Scale", _scale_edits, Vector3.ONE))
-	vbox.add_child(_make_vector3_editor("Rotation", _rotation_edits, Vector3.ZERO))
+	vbox.add_child(_make_vector3_editor("Rotation Degrees", _rotation_edits, Vector3.ZERO))
 
 	var apply_button := Button.new()
 	apply_button.text = "Apply transform"
@@ -129,12 +129,12 @@ func _setup_ui() -> void:
 	vbox.add_child(buttons)
 
 	var save_button := Button.new()
-	save_button.text = "Save JSON beside asset"
+	save_button.text = "Save YAML beside asset"
 	save_button.pressed.connect(_save_config)
 	buttons.add_child(save_button)
 
 	var load_button := Button.new()
-	load_button.text = "Load JSON beside asset"
+	load_button.text = "Load YAML beside asset"
 	load_button.pressed.connect(_load_config)
 	buttons.add_child(load_button)
 
@@ -163,6 +163,19 @@ func _setup_ui() -> void:
 	_any_dialog.filters = PackedStringArray(["*.compressed.ply ; Recommended AeroBeat splat format", "*.ply,*.splat,*.sog ; GDGS compatibility formats"])
 	_any_dialog.file_selected.connect(_load_splat)
 	layer.add_child(_any_dialog)
+
+func get_current_sidecar_path() -> String:
+	return Paths.sidecar_path_for(_current_asset_path)
+
+func get_current_config_payload() -> Dictionary:
+	if _splat_node == null:
+		return ConfigUtils.build_transform_config(_vector3_from_edits(_position_edits), _vector3_from_edits(_rotation_edits), _vector3_from_edits(_scale_edits))
+	return ConfigUtils.build_transform_config(_splat_node.position, _splat_node.rotation_degrees, _splat_node.scale)
+
+func save_current_config() -> Dictionary:
+	var result := ConfigUtils.save_sidecar(_current_asset_path, "splat", get_current_config_payload())
+	_status_label.text = "Saved %s" % String(result.get("path", get_current_sidecar_path())) if result.get("ok", false) else String(result.get("message", "Save failed"))
+	return result
 
 func _make_vector3_editor(label_text: String, target: Array[LineEdit], defaults: Vector3) -> Control:
 	var wrapper := VBoxContainer.new()
@@ -232,10 +245,10 @@ func _load_splat(path: String) -> void:
 		if sync_result.get("ok", false):
 			_install_loaded_splat(sync_result, "Loaded via synchronous compatibility path.")
 		else:
-			_status_label.text = sync_result.get("message", "Failed to load splat")
+			_status_label.text = String(sync_result.get("message", "Failed to load splat"))
 			_debug_label.text = _status_label.text
 		return
-	_status_label.text = result.get("message", "Failed to start async load")
+	_status_label.text = String(result.get("message", "Failed to start async load"))
 	_debug_label.text = _status_label.text
 	_set_loading_ui({
 		"pending": false,
@@ -247,47 +260,62 @@ func _load_splat(path: String) -> void:
 func _apply_transform_from_ui() -> void:
 	if _splat_node == null:
 		return
-	var config := ConfigUtils.parse_config({
-		"center": _line_edits_to_array(_center_edits),
-		"scale": _line_edits_to_array(_scale_edits),
-		"rotation": _line_edits_to_array(_rotation_edits)
+	var config := ConfigUtils.normalize_transform_config({
+		"transform": {
+			"position": _vector3_to_array(_vector3_from_edits(_position_edits)),
+			"rotation_degrees": _vector3_to_array(_vector3_from_edits(_rotation_edits)),
+			"scale": _vector3_to_array(_vector3_from_edits(_scale_edits))
+		}
 	})
-	_splat_node.position = config["center"]
-	_splat_node.scale = config["scale"]
-	_splat_node.rotation_degrees = config["rotation"]
+	var transform: Dictionary = config.get("transform", {})
+	_splat_node.position = _vector3_from_variant(transform.get("position", Vector3.ZERO), Vector3.ZERO)
+	_splat_node.scale = _vector3_from_variant(transform.get("scale", Vector3.ONE), Vector3.ONE)
+	_splat_node.rotation_degrees = _vector3_from_variant(transform.get("rotation_degrees", Vector3.ZERO), Vector3.ZERO)
 
 func _save_config() -> void:
 	if _current_asset_path.is_empty() or _splat_node == null:
 		_status_label.text = "Choose a splat first."
 		return
 	_apply_transform_from_ui()
-	var config_path := Paths.sidecar_path_for(_current_asset_path)
-	var payload := ConfigUtils.build_config(_splat_node.position, _splat_node.scale, _splat_node.rotation_degrees)
-	var result := ConfigUtils.save_json(config_path, payload)
-	_status_label.text = "Saved %s" % result.get("path", config_path) if result.get("ok", false) else result.get("message", "Save failed")
+	save_current_config()
 
 func _load_config() -> void:
 	if _current_asset_path.is_empty():
 		_status_label.text = "Choose a splat first."
 		return
-	var result := ConfigUtils.load_json(Paths.sidecar_path_for(_current_asset_path))
-	if not result.get("ok", false):
-		_status_label.text = result.get("message", "Load failed")
-		return
-	var config: Dictionary = result["config"]
-	_set_line_edits(_center_edits, config["center"])
-	_set_line_edits(_scale_edits, config["scale"])
-	_set_line_edits(_rotation_edits, config["rotation"])
-	_apply_transform_from_ui()
-	_status_label.text = "Loaded JSON beside the splat asset."
+	_apply_loaded_config_result(ConfigUtils.load_sidecar(_current_asset_path, "splat"))
 
-func _line_edits_to_array(edits: Array[LineEdit]) -> Array:
-	return [float(edits[0].text), float(edits[1].text), float(edits[2].text)]
+func _apply_loaded_config_result(result: Dictionary) -> void:
+	if not result.get("ok", false):
+		_status_label.text = String(result.get("message", "Load failed"))
+		return
+	if not result.get("has_config", false):
+		_status_label.text = "No sibling .config.yaml sidecar found for this splat."
+		return
+	var transform: Dictionary = result.get("config", {}).get("transform", {})
+	_set_line_edits(_position_edits, _vector3_from_variant(transform.get("position", Vector3.ZERO), Vector3.ZERO))
+	_set_line_edits(_scale_edits, _vector3_from_variant(transform.get("scale", Vector3.ONE), Vector3.ONE))
+	_set_line_edits(_rotation_edits, _vector3_from_variant(transform.get("rotation_degrees", Vector3.ZERO), Vector3.ZERO))
+	_apply_transform_from_ui()
+	_status_label.text = "Loaded sibling .config.yaml sidecar for the splat asset."
+
+func _vector3_from_edits(edits: Array[LineEdit]) -> Vector3:
+	return Vector3(float(edits[0].text), float(edits[1].text), float(edits[2].text))
 
 func _set_line_edits(edits: Array[LineEdit], value: Vector3) -> void:
 	edits[0].text = str(value.x)
 	edits[1].text = str(value.y)
 	edits[2].text = str(value.z)
+
+func _vector3_to_array(value: Vector3) -> Array:
+	return [value.x, value.y, value.z]
+
+func _vector3_from_variant(value: Variant, fallback: Vector3) -> Vector3:
+	if value is Array and value.size() >= 3:
+		return Vector3(float(value[0]), float(value[1]), float(value[2]))
+	if value is Dictionary:
+		return Vector3(float(value.get("x", fallback.x)), float(value.get("y", fallback.y)), float(value.get("z", fallback.z)))
+	return fallback
 
 func _on_background_load_started(result: Dictionary) -> void:
 	_set_loading_ui(result)
@@ -300,7 +328,7 @@ func _on_background_load_progressed(result: Dictionary) -> void:
 func _on_background_load_finished(result: Dictionary) -> void:
 	_set_loading_ui(result)
 	if not result.get("ok", false):
-		_status_label.text = result.get("message", "Failed to load splat")
+		_status_label.text = String(result.get("message", "Failed to load splat"))
 		_debug_label.text = _status_label.text
 		return
 	_install_loaded_splat(result, "Loaded via async AeroBeat wrapper API.")
@@ -311,8 +339,12 @@ func _install_loaded_splat(result: Dictionary, success_text: String) -> void:
 		_splat_node = null
 	_splat_node = result["node"]
 	_display_root.add_child(_splat_node)
-	_apply_transform_from_ui()
-	_status_label.text = success_text
+	var config_result := ConfigUtils.load_sidecar(_current_asset_path, "splat")
+	if config_result.get("has_config", false):
+		_apply_loaded_config_result(config_result)
+	else:
+		_apply_transform_from_ui()
+		_status_label.text = "%s No sibling .config.yaml sidecar was found." % success_text
 	_debug_label.text = "Path: %s\nFormat: %s\nPoints: %s\nAABB: %s\nPhase: %s\nProgress: %s%%\nRenderer: %s\nSupport: %s" % [
 		result.get("path", _current_asset_path),
 		result.get("format", "unknown"),
@@ -332,7 +364,7 @@ func _set_loading_ui(result: Dictionary) -> void:
 	_loading_state_label.text = "%s (%d%%)" % [
 		result.get("status", "Idle"),
 		int(round(progress * 100.0))
-	] if pending else result.get("status", "Idle")
+	] if pending else String(result.get("status", "Idle"))
 
 func _clear_current_splat() -> void:
 	if _splat_node != null:

@@ -25,8 +25,9 @@ The GLB and splat scenes expose:
 
 - a file picker rooted to the matching asset folder
 - free-fly camera controls (`WASD`, arrows, mouse look, `Esc` to release mouse)
-- left-panel JSON config save/load beside the selected asset
-- shared baseline config fields: `center`, `scale`, `rotation`
+- left-panel YAML sidecar save/load beside the selected asset
+- auto-load of sibling `<asset-stem>.config.yaml` files when an asset is selected
+- shared transform contract fields: `transform.position`, `transform.rotation_degrees`, `transform.scale`
 
 The splat scene also exposes:
 
@@ -36,10 +37,16 @@ The splat scene also exposes:
 - renderer-path support truth from the wrapper so the scene can disable unsupported renderer paths instead of pretending splats should visibly render everywhere
 - current validation warning text that keeps Forward+ / Vulkan render output in the experimental bucket until the GDGS compositor path is proven stable on the active backend/hardware
 
-The image and video scenes expose web-style fit modes as closely as practical:
+The image and video scenes expose the shared `media.fit_mode` contract and currently support these preview modes:
 
+- `stretch`
 - `contain`
 - `cover`
+
+For every media type in `.testbed/`, the shared sidecar seam now resolves the selected asset's sibling `<asset-stem>.config.yaml` file and normalizes payloads to one of:
+
+- image / video: `media.fit_mode`
+- GLB / splat: `transform.position`, `transform.rotation_degrees`, `transform.scale`
 
 Video validation is intentionally **truth-locked to canonical `.ogv` (Theora)** input.
 The current testbed does not claim `.webm` or `.mp4` playback support.

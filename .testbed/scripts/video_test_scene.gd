@@ -1,6 +1,7 @@
 extends Control
 
 const Paths := preload("res://scripts/testbed_paths.gd")
+const ConfigUtils := preload("res://scripts/transform_config.gd")
 const VideoPlayerManagerScript := preload("res://addons/aerobeat-tool-video-player/src/AeroVideoPlayerManager.gd")
 const GodotVideoBackendScript := preload("res://addons/aerobeat-vendor-godot-video/src/AeroGodotVideoBackend.gd")
 
@@ -11,6 +12,7 @@ var _file_dialog: FileDialog
 var _video_manager: Node
 var _video_surface: Control
 var _texture_rect: TextureRect
+var _current_asset_path: String = ""
 
 func _ready() -> void:
 	_build_ui()
@@ -38,9 +40,11 @@ func _build_ui() -> void:
 	panel.add_child(button)
 
 	_fit_selector = OptionButton.new()
+	_fit_selector.add_item("stretch")
 	_fit_selector.add_item("contain")
 	_fit_selector.add_item("cover")
 	_fit_selector.item_selected.connect(_apply_fit_mode)
+	_fit_selector.select(2)
 	panel.add_child(_fit_selector)
 
 	_path_label = Label.new()
@@ -50,7 +54,7 @@ func _build_ui() -> void:
 
 	_status_label = Label.new()
 	_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_status_label.text = "Canonical video support here is truth-locked to .ogv (Theora). Playback now routes through the shared AeroVideoPlayerManager facade with the real AeroGodotVideoBackend injected beneath it. Contain/cover mirrors the backend texture when available."
+	_status_label.text = "Canonical video support here is truth-locked to .ogv (Theora). Playback routes through the shared AeroVideoPlayerManager facade. Selecting a video auto-loads any sibling .config.yaml fit-mode sidecar."
 	panel.add_child(_status_label)
 
 	var preview_holder := PanelContainer.new()
@@ -60,7 +64,7 @@ func _build_ui() -> void:
 
 	_texture_rect = TextureRect.new()
 	_texture_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	_texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	_texture_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	preview_holder.add_child(_texture_rect)
 
@@ -78,6 +82,20 @@ func _build_ui() -> void:
 	_file_dialog.file_selected.connect(_load_video)
 	add_child(_file_dialog)
 
+func get_current_sidecar_path() -> String:
+	return Paths.sidecar_path_for(_current_asset_path)
+
+func get_current_config_payload() -> Dictionary:
+	return ConfigUtils.build_media_config(_current_fit_mode())
+
+func save_current_config() -> Dictionary:
+	var result := ConfigUtils.save_sidecar(_current_asset_path, "video", get_current_config_payload())
+	if result.get("ok", false):
+		_status_label.text = "Saved %s" % String(result.get("path", get_current_sidecar_path()))
+	else:
+		_status_label.text = String(result.get("message", "Save failed"))
+	return result
+
 func _process(_delta: float) -> void:
 	var backend_player := _get_backend_player()
 	if backend_player == null:
@@ -91,7 +109,7 @@ func _process(_delta: float) -> void:
 			_texture_rect.texture = texture
 			if backend_player is CanvasItem:
 				(backend_player as CanvasItem).visible = false
-			return
+				return
 	_texture_rect.texture = null
 	if backend_player is CanvasItem:
 		(backend_player as CanvasItem).visible = true
@@ -126,9 +144,18 @@ func _open_file_dialog() -> void:
 	_file_dialog.popup_centered_ratio(0.8)
 
 func _apply_fit_mode(index: int) -> void:
-	_texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED if index == 0 else TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	match index:
+		0:
+			_texture_rect.stretch_mode = TextureRect.STRETCH_SCALE
+		1:
+			_texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		_:
+			_texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	if _video_manager != null and _video_manager.has_method("set_fit_mode"):
+		_video_manager.set_fit_mode(_current_fit_mode())
 
 func _load_video(path: String) -> void:
+	_current_asset_path = path
 	if path.get_extension().to_lower() != "ogv":
 		_path_label.text = "Unsupported video extension: %s" % path
 		_status_label.text = "Video validation is truth-locked to canonical .ogv input."
@@ -164,5 +191,39 @@ func _load_video(path: String) -> void:
 		_status_label.text = String(play_error.get("message", "Video playback could not be started."))
 		return
 	_path_label.text = path
+	_apply_loaded_config_result(ConfigUtils.load_sidecar(_current_asset_path, "video"))
 	var state := _get_manager_state()
-	_status_label.text = "Loaded canonical .ogv video through shared backend %s. Contain/cover mirrors the backend texture when available; otherwise the backend-owned player node is shown as a fallback." % String(state.get("backend", "unknown"))
+	if not _status_label.text.contains(".config.yaml"):
+		_status_label.text = "Loaded canonical .ogv video through shared backend %s. Contain/cover mirrors the backend texture when available; otherwise the backend-owned player node is shown as a fallback." % String(state.get("backend", "unknown"))
+
+func _apply_loaded_config_result(result: Dictionary) -> void:
+	if not result.get("ok", false):
+		_status_label.text = String(result.get("message", "Config load failed"))
+		return
+	if not result.get("has_config", false):
+		_status_label.text = "Loaded canonical .ogv video with no sibling .config.yaml sidecar."
+		return
+	var config: Dictionary = result.get("config", {})
+	var media: Dictionary = config.get("media", {})
+	_set_fit_mode(String(media.get("fit_mode", ConfigUtils.DEFAULT_FIT_MODE)))
+	_status_label.text = "Loaded canonical .ogv video and applied sibling .config.yaml fit-mode sidecar."
+
+func _set_fit_mode(fit_mode: String) -> void:
+	var normalized := String(fit_mode).strip_edges().to_lower()
+	match normalized:
+		"stretch":
+			_fit_selector.select(0)
+		"contain":
+			_fit_selector.select(1)
+		_:
+			_fit_selector.select(2)
+	_apply_fit_mode(_fit_selector.selected)
+
+func _current_fit_mode() -> String:
+	match _fit_selector.selected:
+		0:
+			return "stretch"
+		1:
+			return "contain"
+		_:
+			return "cover"
