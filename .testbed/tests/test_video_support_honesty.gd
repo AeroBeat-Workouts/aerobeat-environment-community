@@ -18,11 +18,11 @@ func test_video_scene_is_truth_locked_to_ogv() -> void:
 	assert_false(text.contains("var _video_player: VideoStreamPlayer"), "video scene should not type its own direct VideoStreamPlayer anymore")
 
 func test_canonical_video_asset_is_ogv_only() -> void:
-	var ogv_path := ProjectSettings.globalize_path("res://assets/videos/calm_blue_sea_1.ogv")
-	var mp4_path := ProjectSettings.globalize_path("res://assets/videos/calm_blue_sea_1.mp4")
-	assert_true(FileAccess.file_exists(ogv_path), "canonical .ogv asset should exist")
-	assert_false(FileAccess.file_exists(mp4_path), "source .mp4 should not remain in the canonical assets folder")
-	var stream = ResourceLoader.load("res://assets/videos/calm_blue_sea_1.ogv")
+	var ogv_path := ProjectSettings.globalize_path("res://assets/videos/calm_blue_sea_1/calm_blue_sea_1.ogv")
+	var mp4_path := ProjectSettings.globalize_path("res://assets/videos/calm_blue_sea_1/calm_blue_sea_1.mp4")
+	assert_true(FileAccess.file_exists(ogv_path), "canonical .ogv asset should exist inside its per-asset folder")
+	assert_false(FileAccess.file_exists(mp4_path), "source .mp4 should not remain beside the canonical .ogv asset")
+	var stream = ResourceLoader.load("res://assets/videos/calm_blue_sea_1/calm_blue_sea_1.ogv")
 	assert_true(stream is VideoStreamTheora, "canonical asset should load as a Theora-backed Godot video stream")
 
 func test_readme_documents_delete_first_restore_flow() -> void:

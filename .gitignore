@@ -8,8 +8,8 @@ export_presets.cfg
 
 # Godot-generated import sidecars / extracted textures
 *.import
-.testbed/assets/models/*_[0-9].png
-.testbed/assets/models/*_[0-9].jpg
+.testbed/assets/models/**/*_[0-9].png
+.testbed/assets/models/**/*_[0-9].jpg
 
 # Godot-generated UID sidecars
 *.uid
