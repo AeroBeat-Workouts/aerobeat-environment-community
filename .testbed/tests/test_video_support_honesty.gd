@@ -11,11 +11,14 @@ func test_video_scene_is_truth_locked_to_ogv() -> void:
 	assert_false(text.contains("*.webm"), "video chooser should not overclaim .webm support")
 	assert_false(text.contains("*.mp4"), "video chooser should not overclaim .mp4 support")
 	assert_true(text.contains("AeroVideoPlayerManager"), "video scene should depend on the stable tool-facing video manager facade")
-	assert_true(text.contains("set_backend(GodotVideoBackendScript.new())"), "video scene should inject the real Godot backend beneath the shared manager")
+	assert_true(text.contains("set_backend(GodotVideoBackendScript.new(), VIDEO_SLOT)"), "video scene should inject the real Godot backend beneath the shared manager")
 	assert_false(text.contains("AeroGodotVideoBackendFactory"), "video scene should not depend on the vendor-specific manager factory anymore")
 	assert_true(text.contains("_video_manager.load"), "video scene should load media through the shared video manager")
+	assert_true(text.contains("attach_slot_surface(VIDEO_SLOT, _video_surface)"), "video scene should attach the shared manager directly to the preview surface")
 	assert_false(text.contains("VideoStreamPlayer.new()"), "video scene should not instantiate the built-in player directly anymore")
 	assert_false(text.contains("var _video_player: VideoStreamPlayer"), "video scene should not type its own direct VideoStreamPlayer anymore")
+	assert_false(text.contains("get_video_texture"), "video scene should not inspect backend-owned textures directly anymore")
+	assert_false(text.contains("_get_backend_player"), "video scene should not reach through the manager boundary for backend-owned children")
 
 func test_canonical_video_asset_is_ogv_only() -> void:
 	var ogv_path := ProjectSettings.globalize_path("res://assets/videos/calm_blue_sea_1/calm_blue_sea_1.ogv")

@@ -2,7 +2,11 @@ extends Control
 
 const Paths := preload("res://scripts/testbed_paths.gd")
 const ConfigUtils := preload("res://scripts/transform_config.gd")
+const AeroImageLoaderScript := preload("res://addons/aerobeat-tool-image-loader/src/AeroImageLoader.gd")
 
+const IMAGE_SLOT := "preview"
+
+var _image_loader: Node
 var _texture_rect: TextureRect
 var _path_label: Label
 var _status_label: Label
@@ -12,6 +16,9 @@ var _current_asset_path: String = ""
 
 func _ready() -> void:
 	_build_ui()
+	_image_loader = AeroImageLoaderScript.new()
+	add_child(_image_loader)
+	_image_loader.attach_slot_surface(IMAGE_SLOT, _texture_rect, ConfigUtils.DEFAULT_FIT_MODE)
 
 func _build_ui() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -32,13 +39,25 @@ func _build_ui() -> void:
 	button.pressed.connect(_open_file_dialog)
 	panel.add_child(button)
 
+	var fit_row := HBoxContainer.new()
+	panel.add_child(fit_row)
+
+	var fit_label := Label.new()
+	fit_label.text = "Fit mode"
+	fit_row.add_child(fit_label)
+
 	_fit_selector = OptionButton.new()
 	_fit_selector.add_item("stretch")
 	_fit_selector.add_item("contain")
 	_fit_selector.add_item("cover")
 	_fit_selector.item_selected.connect(_on_fit_mode_changed)
 	_fit_selector.select(2)
-	panel.add_child(_fit_selector)
+	fit_row.add_child(_fit_selector)
+
+	var save_button := Button.new()
+	save_button.text = "Save Config"
+	save_button.pressed.connect(save_current_config)
+	fit_row.add_child(save_button)
 
 	_path_label = Label.new()
 	_path_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -57,7 +76,6 @@ func _build_ui() -> void:
 
 	_texture_rect = TextureRect.new()
 	_texture_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	_texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	_texture_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	preview_holder.add_child(_texture_rect)
 
@@ -87,25 +105,27 @@ func save_current_config() -> Dictionary:
 func _open_file_dialog() -> void:
 	_file_dialog.popup_centered_ratio(0.8)
 
-func _on_fit_mode_changed(index: int) -> void:
-	match index:
-		0:
-			_texture_rect.stretch_mode = TextureRect.STRETCH_SCALE
-		1:
-			_texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		_:
-			_texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+func _on_fit_mode_changed(_index: int) -> void:
+	if _image_loader != null and _image_loader.has_method("set_slot_fit_mode"):
+		_image_loader.set_slot_fit_mode(IMAGE_SLOT, _current_fit_mode())
 
 func _load_image(path: String) -> void:
 	_current_asset_path = path
-	var image := Image.new()
-	var err := image.load(path)
-	if err != OK:
-		_path_label.text = "Failed to load image: %s" % path
-		_status_label.text = "Image load failed before any sidecar config could be applied."
-		return
-	_texture_rect.texture = ImageTexture.create_from_image(image)
 	_path_label.text = path
+	var load_result: Dictionary = _image_loader.load_image({
+		"path": Paths.localize_if_possible(path),
+		"slot": IMAGE_SLOT,
+		"fit_mode": _current_fit_mode(),
+		"metadata": {
+			"scene": "environment_community_image_test",
+			"selected_path": path,
+		},
+	})
+	if not bool(load_result.get("success", false)):
+		_texture_rect.texture = null
+		_path_label.text = "Failed to load image: %s" % path
+		_status_label.text = String(load_result.get("message", "Image load failed before any sidecar config could be applied."))
+		return
 	_apply_loaded_config_result(ConfigUtils.load_sidecar(_current_asset_path, "image"))
 
 func _apply_loaded_config_result(result: Dictionary) -> void:

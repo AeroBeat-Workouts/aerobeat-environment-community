@@ -37,7 +37,7 @@ The splat scene also exposes:
 - renderer-path support truth from the wrapper so the scene can disable unsupported renderer paths instead of pretending splats should visibly render everywhere
 - current validation warning text that keeps Forward+ / Vulkan render output in the experimental bucket until the GDGS compositor path is proven stable on the active backend/hardware
 
-The image and video scenes expose the shared `media.fit_mode` contract and currently support these preview modes:
+The image and video scenes expose the shared `media.fit_mode` contract, default the live value to `cover`, and include a `Save Config` action beside the live fit-mode control. They currently support these preview modes:
 
 - `stretch`
 - `contain`

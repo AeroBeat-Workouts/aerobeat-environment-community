@@ -5,20 +5,24 @@ const ConfigUtils := preload("res://scripts/transform_config.gd")
 const VideoPlayerManagerScript := preload("res://addons/aerobeat-tool-video-player/src/AeroVideoPlayerManager.gd")
 const GodotVideoBackendScript := preload("res://addons/aerobeat-vendor-godot-video/src/AeroGodotVideoBackend.gd")
 
+const VIDEO_SLOT := "preview"
+
 var _path_label: Label
 var _status_label: Label
 var _fit_selector: OptionButton
 var _file_dialog: FileDialog
 var _video_manager: Node
 var _video_surface: Control
-var _texture_rect: TextureRect
 var _current_asset_path: String = ""
 
 func _ready() -> void:
 	_build_ui()
 	_video_manager = _build_video_manager()
 	add_child(_video_manager)
-	set_process(true)
+	_video_manager.attach_slot_surface(VIDEO_SLOT, _video_surface)
+	var attach_error := _get_manager_error()
+	if attach_error.is_empty():
+		_video_manager.set_fit_mode(_current_fit_mode(), VIDEO_SLOT)
 
 func _build_ui() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -39,13 +43,25 @@ func _build_ui() -> void:
 	button.pressed.connect(_open_file_dialog)
 	panel.add_child(button)
 
+	var fit_row := HBoxContainer.new()
+	panel.add_child(fit_row)
+
+	var fit_label := Label.new()
+	fit_label.text = "Fit mode"
+	fit_row.add_child(fit_label)
+
 	_fit_selector = OptionButton.new()
 	_fit_selector.add_item("stretch")
 	_fit_selector.add_item("contain")
 	_fit_selector.add_item("cover")
 	_fit_selector.item_selected.connect(_apply_fit_mode)
 	_fit_selector.select(2)
-	panel.add_child(_fit_selector)
+	fit_row.add_child(_fit_selector)
+
+	var save_button := Button.new()
+	save_button.text = "Save Config"
+	save_button.pressed.connect(save_current_config)
+	fit_row.add_child(save_button)
 
 	_path_label = Label.new()
 	_path_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -61,12 +77,6 @@ func _build_ui() -> void:
 	preview_holder.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	preview_holder.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	split.add_child(preview_holder)
-
-	_texture_rect = TextureRect.new()
-	_texture_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	_texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	_texture_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	preview_holder.add_child(_texture_rect)
 
 	_video_surface = Control.new()
 	_video_surface.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -96,38 +106,10 @@ func save_current_config() -> Dictionary:
 		_status_label.text = String(result.get("message", "Save failed"))
 	return result
 
-func _process(_delta: float) -> void:
-	var backend_player := _get_backend_player()
-	if backend_player == null:
-		_texture_rect.texture = null
-		return
-	if backend_player is Control:
-		(backend_player as Control).set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	if backend_player.has_method("get_video_texture"):
-		var texture: Variant = backend_player.call("get_video_texture")
-		if texture != null:
-			_texture_rect.texture = texture
-			if backend_player is CanvasItem:
-				(backend_player as CanvasItem).visible = false
-				return
-	_texture_rect.texture = null
-	if backend_player is CanvasItem:
-		(backend_player as CanvasItem).visible = true
-
-func _build_video_manager() -> Node:
-	var manager := VideoPlayerManagerScript.new()
-	manager.set_backend(GodotVideoBackendScript.new())
-	return manager
-
-func _get_backend_player() -> Node:
-	if _video_surface == null or _video_surface.get_child_count() == 0:
-		return null
-	return _video_surface.get_child(0)
-
 func _get_manager_error() -> Dictionary:
 	if _video_manager == null or not _video_manager.has_method("get_last_error"):
 		return {}
-	var last_error: Variant = _video_manager.get_last_error()
+	var last_error: Variant = _video_manager.get_last_error(VIDEO_SLOT)
 	if last_error is Dictionary:
 		return Dictionary(last_error).duplicate(true)
 	return {}
@@ -135,24 +117,22 @@ func _get_manager_error() -> Dictionary:
 func _get_manager_state() -> Dictionary:
 	if _video_manager == null or not _video_manager.has_method("get_state"):
 		return {}
-	var state: Variant = _video_manager.get_state()
+	var state: Variant = _video_manager.get_state(VIDEO_SLOT)
 	if state is Dictionary:
 		return Dictionary(state).duplicate(true)
 	return {}
 
+func _build_video_manager() -> Node:
+	var manager := VideoPlayerManagerScript.new()
+	manager.set_backend(GodotVideoBackendScript.new(), VIDEO_SLOT)
+	return manager
+
 func _open_file_dialog() -> void:
 	_file_dialog.popup_centered_ratio(0.8)
 
-func _apply_fit_mode(index: int) -> void:
-	match index:
-		0:
-			_texture_rect.stretch_mode = TextureRect.STRETCH_SCALE
-		1:
-			_texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		_:
-			_texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+func _apply_fit_mode(_index: int) -> void:
 	if _video_manager != null and _video_manager.has_method("set_fit_mode"):
-		_video_manager.set_fit_mode(_current_fit_mode())
+		_video_manager.set_fit_mode(_current_fit_mode(), VIDEO_SLOT)
 
 func _load_video(path: String) -> void:
 	_current_asset_path = path
@@ -161,18 +141,13 @@ func _load_video(path: String) -> void:
 		_status_label.text = "Video validation is truth-locked to canonical .ogv input."
 		return
 	var local_path := Paths.localize_if_possible(path)
-	_texture_rect.texture = null
 	if _video_manager.has_method("unload"):
-		_video_manager.unload()
-	_video_manager.attach_surface(_video_surface)
-	var attach_error := _get_manager_error()
-	if not attach_error.is_empty():
-		_path_label.text = "Failed to attach playback surface: %s" % path
-		_status_label.text = String(attach_error.get("message", "Shared video backend rejected the playback surface."))
-		return
+		_video_manager.unload(VIDEO_SLOT)
 	_video_manager.load({
 		"path": local_path,
 		"kind": "file",
+		"slot": VIDEO_SLOT,
+		"fit_mode": _current_fit_mode(),
 		"autoplay": false,
 		"metadata": {
 			"scene": "environment_community_video_test",
@@ -184,7 +159,7 @@ func _load_video(path: String) -> void:
 		_path_label.text = "Failed to load video resource: %s" % path
 		_status_label.text = "%s Shared playback here still only proves canonical .ogv files." % String(load_error.get("message", "Video stream could not be loaded."))
 		return
-	_video_manager.play()
+	_video_manager.play(VIDEO_SLOT)
 	var play_error := _get_manager_error()
 	if not play_error.is_empty():
 		_path_label.text = "Failed to start playback: %s" % path
@@ -194,7 +169,7 @@ func _load_video(path: String) -> void:
 	_apply_loaded_config_result(ConfigUtils.load_sidecar(_current_asset_path, "video"))
 	var state := _get_manager_state()
 	if not _status_label.text.contains(".config.yaml"):
-		_status_label.text = "Loaded canonical .ogv video through shared backend %s. Contain/cover mirrors the backend texture when available; otherwise the backend-owned player node is shown as a fallback." % String(state.get("backend", "unknown"))
+		_status_label.text = "Loaded canonical .ogv video through shared backend %s with live %s fit mode." % [String(state.get("backend", "unknown")), _current_fit_mode()]
 
 func _apply_loaded_config_result(result: Dictionary) -> void:
 	if not result.get("ok", false):
