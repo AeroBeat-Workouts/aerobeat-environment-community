@@ -174,7 +174,8 @@ func test_rotation_gizmo_drag_emits_wrapped_rotation() -> void:
 	gizmo._gui_input(_mouse_motion_event(end))
 	gizmo._gui_input(_mouse_button_event(end, false))
 
-	assert_lt((gizmo.call("get_gizmo_rotation_degrees") as Vector3).x, 0.0, "Rotation gizmo should wrap through the signed degree range")
+	var wrapped_rotation := gizmo.call("get_gizmo_rotation_degrees") as Vector3
+	assert_almost_eq(wrapped_rotation.x, 4.0, 0.01, "Rotation gizmo should wrap through the signed degree range")
 	assert_eq(gizmo.call("is_dragging"), false)
 	_free_node(gizmo)
 
