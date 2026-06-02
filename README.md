@@ -66,7 +66,7 @@ Renderer-path truth note:
 cd .testbed
 godotenv addons install
 godot --headless --path . --import
-godot --headless --path . --script addons/gut/gut_cmdln.gd -gdir=res://tests -ginclude_subdirs -gexit
+godot --headless --path . --script addons/aerobeat-vendor-godot-unit-test/gut_cmdln.gd -gdir=res://tests -ginclude_subdirs -gexit
 ```
 
 ## Clean restore flow for GodotEnv-managed addons
