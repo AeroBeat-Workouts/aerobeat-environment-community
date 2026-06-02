@@ -1,7 +1,7 @@
 # AeroBeat Environment Community
 
 **Date:** 2026-05-15  
-**Status:** Draft  
+**Status:** Stale  
 **Agent:** Cookie 🍪
 
 ---

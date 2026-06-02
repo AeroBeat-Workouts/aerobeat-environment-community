@@ -1,7 +1,7 @@
 # AeroBeat Environment Community — Splat Loading Debug
 
 **Date:** 2026-05-15  
-**Status:** In Progress  
+**Status:** Stale  
 **Agent:** Chip 🐱‍💻
 
 ---
