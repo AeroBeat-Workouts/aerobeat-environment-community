@@ -1,58 +1,56 @@
 {
   "$schema": "https://chickensoft.games/schemas/addons.schema.json",
   "addons": {
-    // Environment-lane shared asset contract.
     "aerobeat-asset-core": {
-      "url": "git@github.com:AeroBeat-Workouts/aerobeat-asset-core.git",
-      "checkout": "main",
-      "subfolder": "/"
+      "url": "../../aerobeat-asset-core",
+      "subfolder": "/",
+      "source": "symlink"
     },
     "aerobeat-tool-core": {
-      "url": "git@github.com:AeroBeat-Workouts/aerobeat-tool-core.git",
-      "checkout": "main",
-      "subfolder": "/"
+      "url": "../../aerobeat-tool-core",
+      "subfolder": "/",
+      "source": "symlink"
     },
     "aerobeat-tool-gaussian-splat-loader": {
-      "url": "git@github.com:AeroBeat-Workouts/aerobeat-tool-gaussian-splat-loader.git",
-      "checkout": "main",
-      "subfolder": "/"
+      "url": "../../aerobeat-tool-gaussian-splat-loader",
+      "subfolder": "/",
+      "source": "symlink"
     },
     "aerobeat-vendor-gdgs": {
-      "url": "git@github.com:AeroBeat-Workouts/aerobeat-vendor-gdgs.git",
-      "checkout": "main",
-      "subfolder": "/src"
+      "url": "../../aerobeat-vendor-gdgs",
+      "subfolder": "/",
+      "source": "symlink"
     },
     "aerobeat-tool-gltf-loader": {
-      "url": "git@github.com:AeroBeat-Workouts/aerobeat-tool-gltf-loader.git",
-      "checkout": "main",
-      "subfolder": "/"
+      "url": "../../aerobeat-tool-gltf-loader",
+      "subfolder": "/",
+      "source": "symlink"
     },
     "aerobeat-vendor-godot-gltf": {
-      "url": "git@github.com:AeroBeat-Workouts/aerobeat-vendor-godot-gltf.git",
-      "checkout": "main",
-      "subfolder": "/src"
+      "url": "../../aerobeat-vendor-godot-gltf",
+      "subfolder": "/",
+      "source": "symlink"
     },
     "aerobeat-tool-video-player": {
-      "url": "git@github.com:AeroBeat-Workouts/aerobeat-tool-video-player.git",
-      "checkout": "main",
-      "subfolder": "/"
+      "url": "../../aerobeat-tool-video-player",
+      "subfolder": "/",
+      "source": "symlink"
     },
     "aerobeat-vendor-godot-video": {
-      "url": "git@github.com:AeroBeat-Workouts/aerobeat-vendor-godot-video.git",
-      "checkout": "main",
-      "subfolder": "/"
+      "url": "../../aerobeat-vendor-godot-video",
+      "subfolder": "/",
+      "source": "symlink"
     },
     "aerobeat-tool-image-loader": {
-      "url": "git@github.com:AeroBeat-Workouts/aerobeat-tool-image-loader.git",
-      "checkout": "main",
-      "subfolder": "/"
+      "url": "../../aerobeat-tool-image-loader",
+      "subfolder": "/",
+      "source": "symlink"
     },
     "aerobeat-vendor-godot-image": {
-      "url": "git@github.com:AeroBeat-Workouts/aerobeat-vendor-godot-image.git",
-      "checkout": "main",
-      "subfolder": "/"
+      "url": "../../aerobeat-vendor-godot-image",
+      "subfolder": "/",
+      "source": "symlink"
     },
-    // Repo-local tests.
     "gut": {
       "url": "git@github.com:bitwes/Gut.git",
       "checkout": "main",
