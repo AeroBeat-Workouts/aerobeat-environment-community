@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://1267m8b26hi1"]
 
-[ext_resource type="Script" path="res://scripts/glb_test_scene.gd" id="1_glb"]
+[ext_resource type="Script" uid="uid://bwy1jrciwr1c1" path="res://scripts/glb_test_scene.gd" id="1_glb"]
 
-[node name="GlbTest" type="Node3D"]
+[node name="GlbTest" type="Node3D" unique_id=531880977]
 script = ExtResource("1_glb")
