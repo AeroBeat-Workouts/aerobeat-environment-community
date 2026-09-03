@@ -122,3 +122,39 @@ The six full-resolution face PNGs are transient and intentionally not committed.
 hashes and sizes are retained in the review stitch report, but a GPU recapture is not
 promised byte-identical across GDGS/device/driver changes; the offline stitch is
 deterministic only for fixed face bytes and the pinned tool versions.
+
+## Owned photosphere catalog
+
+`.testbed/assets/images/photosphere-catalog.json` pins exactly eight generated-and-
+purchased splat derivatives. Each `<id>-photosphere/` folder contains a `4096 × 2048`
+RGB JPEG, a bounded `aerobeat/environment_asset_config` v1 JSON identity/transform contract,
+and a derivative manifest. The pre-existing luminous JPEG, YAML, manifest, and review
+bytes remain protected; its JSON config is an additive successor for catalog parity.
+
+The seven additional captures use the same visible Vulkan Forward+ scene, fixed
+`[0, 0, 4]` viewpoint, center-forward `-Z`, and `1920`-pixel faces. For each ID, run:
+
+```bash
+cd .testbed
+godot --path . --resolution 1920x1920 res://tools/photosphere/capture_cubemap.tscn -- \
+  --asset=res://assets/splats/<id>/<id>.compressed.ply \
+  --out-dir=/tmp/aerobeat-<id>-cubemap --face-size=1920 --timeout-seconds=360
+cd ..
+python3 .testbed/tools/photosphere/cube_to_equirect.py \
+  --faces /tmp/aerobeat-<id>-cubemap \
+  --output .testbed/assets/images/<id>-photosphere/<id>-photosphere.jpg \
+  --review-dir .plans/review/2026-09-03-owned-photosphere-catalog/<id> \
+  --width 4096 --height 2048
+```
+
+After all seven stitches, `python3 .testbed/tools/photosphere/finalize_catalog.py`
+regenerates additive JSON configs, seven manifests, the exact eight-entry catalog,
+continuity metrics, copied bounded luminous review evidence, and the labeled panorama
+contact sheet. Validate everything with:
+
+```bash
+python3 .testbed/tools/photosphere/validate_photosphere.py --repo-root .
+```
+
+Coverage weaknesses from the common viewpoint are retained and labeled in the catalog;
+they are not hidden by moving the camera. No runtime splat integration is included.

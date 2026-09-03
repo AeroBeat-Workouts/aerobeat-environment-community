@@ -1,0 +1,317 @@
+{
+  "convention": {
+    "equirect_center_forward": [
+      0,
+      0,
+      -1
+    ],
+    "equirect_right_at_center": [
+      1,
+      0,
+      0
+    ],
+    "equirect_top": [
+      0,
+      1,
+      0
+    ],
+    "face_axes_forward_right_up": {
+      "pos_x": [
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ],
+      "neg_x": [
+        [
+          -1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          -1
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ],
+      "pos_y": [
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ],
+      "neg_y": [
+        [
+          0,
+          -1,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          -1
+        ]
+      ],
+      "pos_z": [
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          -1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ],
+      "neg_z": [
+        [
+          0,
+          0,
+          -1
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ]
+    }
+  },
+  "input": {
+    "face_size": 1920,
+    "inventory": [
+      "pos_x.png",
+      "neg_x.png",
+      "pos_y.png",
+      "neg_y.png",
+      "pos_z.png",
+      "neg_z.png",
+      "capture.json"
+    ],
+    "face_sha256": {
+      "pos_x": "fa2554752646703746c3e1c53ee7d7869656c834bc6b55e1a2b1398e500eef8b",
+      "neg_x": "554ed41349dbef64c7f429db224a2feac2d943fdbdfa4ab51d44d4fafefa3893",
+      "pos_y": "14e2c33e03979feb19ba10c34df27d85499ae34224164ea3ad9998ba88ef0f07",
+      "neg_y": "16481781be626de7a0f94ecc6fa3e02e704478db8e92a64bd463ba124a2f5407",
+      "pos_z": "be70ec17183ac3a99663d3c45705104122573acdbb32d76c6aa1e8ac43eaf4b1",
+      "neg_z": "6814d41698d0174116029c75ba510da856df0a71b21ba02eaaab05c1ae4e2c2c"
+    },
+    "face_bytes": {
+      "pos_x": 2541897,
+      "neg_x": 2517277,
+      "pos_y": 1624333,
+      "neg_y": 2924206,
+      "pos_z": 2467179,
+      "neg_z": 2572391
+    },
+    "capture_metadata_sha256": "ba1aaaa89780cbe88af04ea9765a1b0771adf748afafa4019d4af957361ac876",
+    "capture_metadata": {
+      "aabb": "[P: (-126.1886, -112.1255, -144.0924), S: (233.9084, 136.1228, 267.8364)]",
+      "asset": "res://assets/splats/igloo-toon/igloo-toon.compressed.ply",
+      "display_server": "X11",
+      "face_order": [
+        "pos_x",
+        "neg_x",
+        "pos_y",
+        "neg_y",
+        "pos_z",
+        "neg_z"
+      ],
+      "face_size": 1920,
+      "faces": [
+        {
+          "bytes": 2541897,
+          "forward": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "name": "pos_x",
+          "sha256": "fa2554752646703746c3e1c53ee7d7869656c834bc6b55e1a2b1398e500eef8b",
+          "up": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "bytes": 2517277,
+          "forward": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "name": "neg_x",
+          "sha256": "554ed41349dbef64c7f429db224a2feac2d943fdbdfa4ab51d44d4fafefa3893",
+          "up": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "bytes": 1624333,
+          "forward": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "name": "pos_y",
+          "sha256": "14e2c33e03979feb19ba10c34df27d85499ae34224164ea3ad9998ba88ef0f07",
+          "up": [
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        {
+          "bytes": 2924206,
+          "forward": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "name": "neg_y",
+          "sha256": "16481781be626de7a0f94ecc6fa3e02e704478db8e92a64bd463ba124a2f5407",
+          "up": [
+            0.0,
+            0.0,
+            -1.0
+          ]
+        },
+        {
+          "bytes": 2467179,
+          "forward": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "name": "pos_z",
+          "sha256": "be70ec17183ac3a99663d3c45705104122573acdbb32d76c6aa1e8ac43eaf4b1",
+          "up": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "bytes": 2572391,
+          "forward": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "name": "neg_z",
+          "sha256": "6814d41698d0174116029c75ba510da856df0a71b21ba02eaaab05c1ae4e2c2c",
+          "up": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        }
+      ],
+      "godot_version": "4.6.2-stable (official)",
+      "load_count": 1,
+      "point_count": 2200000,
+      "rendering_device": "NVIDIA GeForce RTX 3080",
+      "rendering_driver": "vulkan",
+      "rendering_method": "forward_plus",
+      "vertical_fov_degrees": 90.0,
+      "viewpoint": [
+        0.0,
+        0.0,
+        4.0
+      ]
+    },
+    "note": "Full-resolution GPU face PNGs are transient build products and are not retained in Git."
+  },
+  "output": {
+    "path": "igloo-toon-photosphere.jpg",
+    "dimensions": [
+      4096,
+      2048
+    ],
+    "mode": "RGB",
+    "jpeg": {
+      "quality": 92,
+      "subsampling": 0,
+      "optimize": false,
+      "progressive": false
+    },
+    "sha256": "c8deae4e235ba529c093ce9ec28aed9d0088d94c379dafe7a23b9c82aac06477",
+    "bytes": 1624217
+  },
+  "review": {
+    "cubemap-cross.png": {
+      "sha256": "55b0ccde0c293ccfc064b3d4be2b9424f21bb5cf7b03803ccf3b167d7004091c",
+      "bytes": 1818437,
+      "dimensions": [
+        2048,
+        1536
+      ],
+      "mode": "RGB"
+    },
+    "panorama-preview.jpg": {
+      "sha256": "fe950f860ffb1b00814c1daf784ff0e3bbafc5b68e70e07d7b1959abb3d2207d",
+      "bytes": 155893,
+      "dimensions": [
+        1024,
+        512
+      ],
+      "mode": "RGB",
+      "jpeg": {
+        "quality": 90,
+        "subsampling": 0,
+        "optimize": false,
+        "progressive": false
+      }
+    }
+  },
+  "versions": {
+    "pillow": "12.1.0",
+    "numpy": "2.4.2"
+  }
+}

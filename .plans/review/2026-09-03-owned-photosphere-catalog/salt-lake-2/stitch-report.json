@@ -1,0 +1,317 @@
+{
+  "convention": {
+    "equirect_center_forward": [
+      0,
+      0,
+      -1
+    ],
+    "equirect_right_at_center": [
+      1,
+      0,
+      0
+    ],
+    "equirect_top": [
+      0,
+      1,
+      0
+    ],
+    "face_axes_forward_right_up": {
+      "pos_x": [
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ],
+      "neg_x": [
+        [
+          -1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          -1
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ],
+      "pos_y": [
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ],
+      "neg_y": [
+        [
+          0,
+          -1,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          -1
+        ]
+      ],
+      "pos_z": [
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          -1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ],
+      "neg_z": [
+        [
+          0,
+          0,
+          -1
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ]
+    }
+  },
+  "input": {
+    "face_size": 1920,
+    "inventory": [
+      "pos_x.png",
+      "neg_x.png",
+      "pos_y.png",
+      "neg_y.png",
+      "pos_z.png",
+      "neg_z.png",
+      "capture.json"
+    ],
+    "face_sha256": {
+      "pos_x": "88256ed943b4b08f14c0633082b33bbbf72aae29c466f6017c9a57e27692aa45",
+      "neg_x": "ef9870d7a8091c9c8e4b8333733568be21ae00517490547bbd04697289593602",
+      "pos_y": "715fdf098cd81bc682b8e21aec137a0de6eacf85f788cf5d656229e07b4d14ee",
+      "neg_y": "01a436dd4a4c49e6fe889e936f740ed5eedeb39ab1304a188b690084465f09fe",
+      "pos_z": "6f44bd91e7ac91c1f786c95025bce83e17edf2128a06b4b321a6902ec28ce343",
+      "neg_z": "dabcfa0eb77b7e08df31bca2edf082b31b3d9a06aaefb97c91d305eaef5d3ba4"
+    },
+    "face_bytes": {
+      "pos_x": 2597320,
+      "neg_x": 2633969,
+      "pos_y": 2810986,
+      "neg_y": 4056922,
+      "pos_z": 2506711,
+      "neg_z": 2788066
+    },
+    "capture_metadata_sha256": "bfa6948d88727393a7a582fd1726cd0ba2b535b00fca7f41dcbbef28c95e1f56",
+    "capture_metadata": {
+      "aabb": "[P: (-112.0088, -101.6793, -111.6288), S: (208.6387, 119.6157, 206.9521)]",
+      "asset": "res://assets/splats/salt-lake-2/salt-lake-2.compressed.ply",
+      "display_server": "X11",
+      "face_order": [
+        "pos_x",
+        "neg_x",
+        "pos_y",
+        "neg_y",
+        "pos_z",
+        "neg_z"
+      ],
+      "face_size": 1920,
+      "faces": [
+        {
+          "bytes": 2597320,
+          "forward": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "name": "pos_x",
+          "sha256": "88256ed943b4b08f14c0633082b33bbbf72aae29c466f6017c9a57e27692aa45",
+          "up": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "bytes": 2633969,
+          "forward": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "name": "neg_x",
+          "sha256": "ef9870d7a8091c9c8e4b8333733568be21ae00517490547bbd04697289593602",
+          "up": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "bytes": 2810986,
+          "forward": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "name": "pos_y",
+          "sha256": "715fdf098cd81bc682b8e21aec137a0de6eacf85f788cf5d656229e07b4d14ee",
+          "up": [
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        {
+          "bytes": 4056922,
+          "forward": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "name": "neg_y",
+          "sha256": "01a436dd4a4c49e6fe889e936f740ed5eedeb39ab1304a188b690084465f09fe",
+          "up": [
+            0.0,
+            0.0,
+            -1.0
+          ]
+        },
+        {
+          "bytes": 2506711,
+          "forward": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "name": "pos_z",
+          "sha256": "6f44bd91e7ac91c1f786c95025bce83e17edf2128a06b4b321a6902ec28ce343",
+          "up": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "bytes": 2788066,
+          "forward": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "name": "neg_z",
+          "sha256": "dabcfa0eb77b7e08df31bca2edf082b31b3d9a06aaefb97c91d305eaef5d3ba4",
+          "up": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        }
+      ],
+      "godot_version": "4.6.2-stable (official)",
+      "load_count": 1,
+      "point_count": 2200000,
+      "rendering_device": "NVIDIA GeForce RTX 3080",
+      "rendering_driver": "vulkan",
+      "rendering_method": "forward_plus",
+      "vertical_fov_degrees": 90.0,
+      "viewpoint": [
+        0.0,
+        0.0,
+        4.0
+      ]
+    },
+    "note": "Full-resolution GPU face PNGs are transient build products and are not retained in Git."
+  },
+  "output": {
+    "path": "salt-lake-2-photosphere.jpg",
+    "dimensions": [
+      4096,
+      2048
+    ],
+    "mode": "RGB",
+    "jpeg": {
+      "quality": 92,
+      "subsampling": 0,
+      "optimize": false,
+      "progressive": false
+    },
+    "sha256": "beebe837d370302e201b4e0dbf6ac28010afc35dc9ec115b01256032737ed474",
+    "bytes": 1974340
+  },
+  "review": {
+    "cubemap-cross.png": {
+      "sha256": "5979e750e9e610b462a2d6ca7f0055876c987b274e44809a6a5944fc7d7bcd9f",
+      "bytes": 2112274,
+      "dimensions": [
+        2048,
+        1536
+      ],
+      "mode": "RGB"
+    },
+    "panorama-preview.jpg": {
+      "sha256": "c1ad68632baa68e3ad4b99535baf282783ff52edf5552dba46ee9a6689f32363",
+      "bytes": 187981,
+      "dimensions": [
+        1024,
+        512
+      ],
+      "mode": "RGB",
+      "jpeg": {
+        "quality": 90,
+        "subsampling": 0,
+        "optimize": false,
+        "progressive": false
+      }
+    }
+  },
+  "versions": {
+    "pillow": "12.1.0",
+    "numpy": "2.4.2"
+  }
+}

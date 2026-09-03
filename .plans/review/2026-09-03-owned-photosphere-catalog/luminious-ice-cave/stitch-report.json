@@ -1,0 +1,311 @@
+{
+  "convention": {
+    "equirect_center_forward": [
+      0,
+      0,
+      -1
+    ],
+    "equirect_right_at_center": [
+      1,
+      0,
+      0
+    ],
+    "equirect_top": [
+      0,
+      1,
+      0
+    ],
+    "face_axes_forward_right_up": {
+      "pos_x": [
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ],
+      "neg_x": [
+        [
+          -1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          -1
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ],
+      "pos_y": [
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ],
+      "neg_y": [
+        [
+          0,
+          -1,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          -1
+        ]
+      ],
+      "pos_z": [
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          -1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ],
+      "neg_z": [
+        [
+          0,
+          0,
+          -1
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ]
+    }
+  },
+  "input": {
+    "face_size": 1920,
+    "inventory": [
+      "pos_x.png",
+      "neg_x.png",
+      "pos_y.png",
+      "neg_y.png",
+      "pos_z.png",
+      "neg_z.png",
+      "capture.json"
+    ],
+    "face_sha256": {
+      "pos_x": "47817684cd2f651def8e3d8b06cdc3ab04a4b56900ea20f0dcdb66fe0de16e77",
+      "neg_x": "1921d730157598ea6fa580bcdafe1d43a51a216767b54855c4d58d8a8f916f52",
+      "pos_y": "2d3040f5a6875c8fc2750be9f98d0b320f21ce59ebd8b49f1934ef8a2d6beda2",
+      "neg_y": "469b7944cccd0feb8774b629e2b91bfbeaa7189dd77ea670d4215ce08838733a",
+      "pos_z": "4767e824021a0d7fce70321dda58fd84913a99837c0799e2c735ad6f8fd36e92",
+      "neg_z": "70b45bac3b30077fa6dc3ad17605f01a776fa72e701d6b6e8255ff0a0e3cd22e"
+    },
+    "face_bytes": {
+      "pos_x": 3510047,
+      "neg_x": 3289764,
+      "pos_y": 3694498,
+      "neg_y": 2525000,
+      "pos_z": 3663061,
+      "neg_z": 3818067
+    },
+    "capture_metadata_sha256": "dfb4c9d6b694cfa1eaf3a6e98feb99685c0fb622f57265f54808261b19f7cb67",
+    "capture_metadata": {
+      "aabb": "[P: (-13.19479, -6.108843, -20.97153), S: (42.97656, 9.789062, 77.45679)]",
+      "asset": "res://assets/splats/luminious-ice-cave/luminious-ice-cave.compressed.ply",
+      "display_server": "X11",
+      "face_order": [
+        "pos_x",
+        "neg_x",
+        "pos_y",
+        "neg_y",
+        "pos_z",
+        "neg_z"
+      ],
+      "face_size": 1920,
+      "faces": [
+        {
+          "bytes": 3510047,
+          "forward": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "name": "pos_x",
+          "up": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "bytes": 3289764,
+          "forward": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "name": "neg_x",
+          "up": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "bytes": 3694498,
+          "forward": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "name": "pos_y",
+          "up": [
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        {
+          "bytes": 2525000,
+          "forward": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "name": "neg_y",
+          "up": [
+            0.0,
+            0.0,
+            -1.0
+          ]
+        },
+        {
+          "bytes": 3663061,
+          "forward": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "name": "pos_z",
+          "up": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "bytes": 3818067,
+          "forward": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "name": "neg_z",
+          "up": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        }
+      ],
+      "godot_version": "4.6.2-stable (official)",
+      "load_count": 1,
+      "point_count": 2200000,
+      "rendering_device": "NVIDIA GeForce RTX 3080",
+      "rendering_driver": "vulkan",
+      "rendering_method": "forward_plus",
+      "vertical_fov_degrees": 90.0,
+      "viewpoint": [
+        0.0,
+        0.0,
+        4.0
+      ]
+    },
+    "note": "Full-resolution GPU face PNGs are transient build products and are not retained in Git."
+  },
+  "output": {
+    "path": "luminious-ice-cave-photosphere.jpg",
+    "dimensions": [
+      4096,
+      2048
+    ],
+    "mode": "RGB",
+    "jpeg": {
+      "quality": 92,
+      "subsampling": 0,
+      "optimize": false,
+      "progressive": false
+    },
+    "sha256": "ff142b3ce3d3509ab3cfafcfc6a8cc2d3b0ff737852072d3a7aea8075478eed5",
+    "bytes": 2210289
+  },
+  "review": {
+    "cubemap-cross.png": {
+      "sha256": "4a547299a6fde2e0a22e7334849fa882e755f3f7310cc434fef2865fdfdc74c2",
+      "bytes": 2445869,
+      "dimensions": [
+        2048,
+        1536
+      ],
+      "mode": "RGB"
+    },
+    "panorama-preview.jpg": {
+      "sha256": "8fd0292c40dc93bc44846ef59eb98a7b921c1dd927eca2156ba98d9d9f3e1823",
+      "bytes": 197456,
+      "dimensions": [
+        1024,
+        512
+      ],
+      "mode": "RGB",
+      "jpeg": {
+        "quality": 90,
+        "subsampling": 0,
+        "optimize": false,
+        "progressive": false
+      }
+    }
+  },
+  "versions": {
+    "pillow": "12.1.0",
+    "numpy": "2.4.2"
+  }
+}

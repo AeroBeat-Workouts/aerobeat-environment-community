@@ -1,0 +1,144 @@
+{
+  "schema": "aerobeat.photosphere-catalog-review/v1",
+  "entryCount": 8,
+  "inventoryPerEntry": [
+    "cubemap-cross.png",
+    "panorama-preview.jpg",
+    "stitch-report.json"
+  ],
+  "entries": {
+    "luminious-ice-cave": {
+      "cubemap-cross.png": {
+        "sha256": "4a547299a6fde2e0a22e7334849fa882e755f3f7310cc434fef2865fdfdc74c2",
+        "bytes": 2445869
+      },
+      "panorama-preview.jpg": {
+        "sha256": "8fd0292c40dc93bc44846ef59eb98a7b921c1dd927eca2156ba98d9d9f3e1823",
+        "bytes": 197456
+      },
+      "stitch-report.json": {
+        "sha256": "bab767d0618ee4744cb9ee1763b0ac302cdc9cd6e6a07fa6bc2d179677870228",
+        "bytes": 5807
+      }
+    },
+    "icebergs-on-sea-shore": {
+      "cubemap-cross.png": {
+        "sha256": "a82898fad8693af895dfb51b94598c7a50359eb373174f968bb87988cd07f0ce",
+        "bytes": 2213949
+      },
+      "panorama-preview.jpg": {
+        "sha256": "d76fbb9f4b8b1bb77f46d2963634d293ee65b5a70ae9baf237e30d5f8587292d",
+        "bytes": 150681
+      },
+      "stitch-report.json": {
+        "sha256": "a20417f4392dc86c63f7d575ca4b7da9435e9fb94ba61dbbeeecc10c326a0897",
+        "bytes": 6343
+      }
+    },
+    "snow-mountain-with-lake": {
+      "cubemap-cross.png": {
+        "sha256": "d6869d05264f1852f087ac3119e1bf77992787e311f837e806577cefe9742581",
+        "bytes": 2198638
+      },
+      "panorama-preview.jpg": {
+        "sha256": "33610aaba8ea712ebd89dc60b2b5c19fd36f2e999624b230e99bc4c6c1a53d0e",
+        "bytes": 168728
+      },
+      "stitch-report.json": {
+        "sha256": "eb7875ec061b2058784caa9054246781415dd1797fcad6b5645d8a2d89ad7afe",
+        "bytes": 6350
+      }
+    },
+    "iceland-waterfall": {
+      "cubemap-cross.png": {
+        "sha256": "0dca627b6611b3af2ad55384e435a410864ea5f87fc96d01adb083093b1a9302",
+        "bytes": 2278011
+      },
+      "panorama-preview.jpg": {
+        "sha256": "0effa2ed196d086e959e4258282159b6528660f8f143c7d4c943150cb783b562",
+        "bytes": 158446
+      },
+      "stitch-report.json": {
+        "sha256": "fde872838bd3f3007a3519305c1b33b9ed62ba96cfaa95458ad659806c108aaf",
+        "bytes": 6332
+      }
+    },
+    "igloo-toon": {
+      "cubemap-cross.png": {
+        "sha256": "55b0ccde0c293ccfc064b3d4be2b9424f21bb5cf7b03803ccf3b167d7004091c",
+        "bytes": 1818437
+      },
+      "panorama-preview.jpg": {
+        "sha256": "fe950f860ffb1b00814c1daf784ff0e3bbafc5b68e70e07d7b1959abb3d2207d",
+        "bytes": 155893
+      },
+      "stitch-report.json": {
+        "sha256": "531540405c432e737511586d4a73191d61554dd1781f9339de6ee0faebaf8507",
+        "bytes": 6311
+      }
+    },
+    "salt-lake": {
+      "cubemap-cross.png": {
+        "sha256": "de44ca13884687c6f6d42bb2a72c5caac5914a7c0f829efe965b37f5393c1acc",
+        "bytes": 2061129
+      },
+      "panorama-preview.jpg": {
+        "sha256": "657af9a8e19f6a1e473fdea724b0c7ab12182815d1622e0a27cda29569d9eb60",
+        "bytes": 182464
+      },
+      "stitch-report.json": {
+        "sha256": "807e8071eabdf01b30071ac2ce80123b8e86f28d1800c36c09c06d0cbbe0bdc6",
+        "bytes": 6306
+      }
+    },
+    "salt-lake-2": {
+      "cubemap-cross.png": {
+        "sha256": "5979e750e9e610b462a2d6ca7f0055876c987b274e44809a6a5944fc7d7bcd9f",
+        "bytes": 2112274
+      },
+      "panorama-preview.jpg": {
+        "sha256": "c1ad68632baa68e3ad4b99535baf282783ff52edf5552dba46ee9a6689f32363",
+        "bytes": 187981
+      },
+      "stitch-report.json": {
+        "sha256": "6ee869ef3107b10988b68477e352c3e4922c7e7c4dd36e005ea8b04c10b08891",
+        "bytes": 6314
+      }
+    },
+    "alpine-river-valley": {
+      "cubemap-cross.png": {
+        "sha256": "f5d1efb3d525f4e0d63c10ca704c2d311b48de4d99cbd9b4dec2e870a7c947ef",
+        "bytes": 2449070
+      },
+      "panorama-preview.jpg": {
+        "sha256": "07d57b205c53df20495489d8d6f5a8b2e656edcd496f6b45f9c9b4fdb446c908",
+        "bytes": 230751
+      },
+      "stitch-report.json": {
+        "sha256": "68261751d04142ed2786770af68f446d21cd11c553887fab49a6db09099c7cb5",
+        "bytes": 6336
+      }
+    }
+  },
+  "contactSheet": {
+    "path": "eight-panorama-contact-sheet.jpg",
+    "sha256": "eb6b43dde2d40ab775a85e65c72d44d93ee41bbdedcca68324a329b6912ee9f0",
+    "bytes": 422231,
+    "dimensions": [
+      1920,
+      480
+    ],
+    "mode": "RGB"
+  },
+  "metrics": {
+    "path": "metrics.json",
+    "sha256": "2f3b329c88781a0e392d4e1a9fa79075bb061c042afdeeb78b93eeb170b10684",
+    "bytes": 1977
+  },
+  "catalog": {
+    "path": ".testbed/assets/images/photosphere-catalog.json",
+    "sha256": "bf68f00eb4d346a98958a4b962c2b37351e1ca21c0f96bcb101e008c681c7e93",
+    "bytes": 18656
+  },
+  "note": "Review artifacts are bounded derivatives only. No full-resolution cubemap faces, PLY bytes, rejected GLB bytes, or absolute paths are included."
+}

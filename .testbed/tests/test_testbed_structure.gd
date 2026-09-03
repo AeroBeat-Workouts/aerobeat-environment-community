@@ -35,7 +35,7 @@ func test_manifest_mentions_tool_and_vendor_dependencies() -> void:
 	assert_true(text.contains('"aerobeat-vendor-gdgs"'), "Manifest should pin GDGS through the explicit vendor repo addon identity")
 
 func test_media_buckets_use_per_asset_folders() -> void:
-	_assert_bucket_has_only_directories("res://assets/images", [".gitkeep"])
+	_assert_bucket_has_only_directories("res://assets/images", [".gitkeep", "photosphere-catalog.json"])
 	_assert_bucket_has_only_directories("res://assets/videos", [".gitkeep"])
 	_assert_bucket_has_only_directories("res://assets/models", [".gitkeep"])
 	_assert_bucket_has_only_directories("res://assets/splats")

@@ -1,0 +1,317 @@
+{
+  "convention": {
+    "equirect_center_forward": [
+      0,
+      0,
+      -1
+    ],
+    "equirect_right_at_center": [
+      1,
+      0,
+      0
+    ],
+    "equirect_top": [
+      0,
+      1,
+      0
+    ],
+    "face_axes_forward_right_up": {
+      "pos_x": [
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ],
+      "neg_x": [
+        [
+          -1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          -1
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ],
+      "pos_y": [
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ],
+      "neg_y": [
+        [
+          0,
+          -1,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          -1
+        ]
+      ],
+      "pos_z": [
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          -1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ],
+      "neg_z": [
+        [
+          0,
+          0,
+          -1
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ]
+    }
+  },
+  "input": {
+    "face_size": 1920,
+    "inventory": [
+      "pos_x.png",
+      "neg_x.png",
+      "pos_y.png",
+      "neg_y.png",
+      "pos_z.png",
+      "neg_z.png",
+      "capture.json"
+    ],
+    "face_sha256": {
+      "pos_x": "80afcecf6bb8099742ff3c70ec4cd29de2e5cf1ca32c4e5cee28323242bb0c7b",
+      "neg_x": "ca5eb2c1d4c2f4d8d71d1041fa4352c417d6c8fc99a1c4e98b645ae4f3918868",
+      "pos_y": "c022250ccc76bd6c5ecc03bcac3a0a0c9e3bf989802e727d67846267e2b3143f",
+      "neg_y": "f343f1d494e938a491d6d98de44c8123236896be39042eaafa88e182ac6be00b",
+      "pos_z": "288f55896f5fa5fb0469b77d0164bc67ca7f847fdc91886aed1382dd136b4f72",
+      "neg_z": "2a0ec10c4e3f754414dd1ab31518aeba05e20cb870498517bef44a27ac71f5de"
+    },
+    "face_bytes": {
+      "pos_x": 3830418,
+      "neg_x": 3761196,
+      "pos_y": 1296903,
+      "neg_y": 5443654,
+      "pos_z": 3416738,
+      "neg_z": 4003718
+    },
+    "capture_metadata_sha256": "876ea715719a781057798ba878d95427360b039c46451d7a56589ebd3ac07f13",
+    "capture_metadata": {
+      "aabb": "[P: (-197.794, -124.8272, -175.563), S: (384.5889, 143.3599, 329.5208)]",
+      "asset": "res://assets/splats/alpine-river-valley/alpine-river-valley.compressed.ply",
+      "display_server": "X11",
+      "face_order": [
+        "pos_x",
+        "neg_x",
+        "pos_y",
+        "neg_y",
+        "pos_z",
+        "neg_z"
+      ],
+      "face_size": 1920,
+      "faces": [
+        {
+          "bytes": 3830418,
+          "forward": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "name": "pos_x",
+          "sha256": "80afcecf6bb8099742ff3c70ec4cd29de2e5cf1ca32c4e5cee28323242bb0c7b",
+          "up": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "bytes": 3761196,
+          "forward": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "name": "neg_x",
+          "sha256": "ca5eb2c1d4c2f4d8d71d1041fa4352c417d6c8fc99a1c4e98b645ae4f3918868",
+          "up": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "bytes": 1296903,
+          "forward": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "name": "pos_y",
+          "sha256": "c022250ccc76bd6c5ecc03bcac3a0a0c9e3bf989802e727d67846267e2b3143f",
+          "up": [
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        {
+          "bytes": 5443654,
+          "forward": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "name": "neg_y",
+          "sha256": "f343f1d494e938a491d6d98de44c8123236896be39042eaafa88e182ac6be00b",
+          "up": [
+            0.0,
+            0.0,
+            -1.0
+          ]
+        },
+        {
+          "bytes": 3416738,
+          "forward": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "name": "pos_z",
+          "sha256": "288f55896f5fa5fb0469b77d0164bc67ca7f847fdc91886aed1382dd136b4f72",
+          "up": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "bytes": 4003718,
+          "forward": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "name": "neg_z",
+          "sha256": "2a0ec10c4e3f754414dd1ab31518aeba05e20cb870498517bef44a27ac71f5de",
+          "up": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        }
+      ],
+      "godot_version": "4.6.2-stable (official)",
+      "load_count": 1,
+      "point_count": 2200000,
+      "rendering_device": "NVIDIA GeForce RTX 3080",
+      "rendering_driver": "vulkan",
+      "rendering_method": "forward_plus",
+      "vertical_fov_degrees": 90.0,
+      "viewpoint": [
+        0.0,
+        0.0,
+        4.0
+      ]
+    },
+    "note": "Full-resolution GPU face PNGs are transient build products and are not retained in Git."
+  },
+  "output": {
+    "path": "alpine-river-valley-photosphere.jpg",
+    "dimensions": [
+      4096,
+      2048
+    ],
+    "mode": "RGB",
+    "jpeg": {
+      "quality": 92,
+      "subsampling": 0,
+      "optimize": false,
+      "progressive": false
+    },
+    "sha256": "7a529a6e0c1bee343633273d672a22f346f8ffc7406bf6a40812ae5435f3260b",
+    "bytes": 2664010
+  },
+  "review": {
+    "cubemap-cross.png": {
+      "sha256": "f5d1efb3d525f4e0d63c10ca704c2d311b48de4d99cbd9b4dec2e870a7c947ef",
+      "bytes": 2449070,
+      "dimensions": [
+        2048,
+        1536
+      ],
+      "mode": "RGB"
+    },
+    "panorama-preview.jpg": {
+      "sha256": "07d57b205c53df20495489d8d6f5a8b2e656edcd496f6b45f9c9b4fdb446c908",
+      "bytes": 230751,
+      "dimensions": [
+        1024,
+        512
+      ],
+      "mode": "RGB",
+      "jpeg": {
+        "quality": 90,
+        "subsampling": 0,
+        "optimize": false,
+        "progressive": false
+      }
+    }
+  },
+  "versions": {
+    "pillow": "12.1.0",
+    "numpy": "2.4.2"
+  }
+}

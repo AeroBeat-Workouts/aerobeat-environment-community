@@ -1,0 +1,317 @@
+{
+  "convention": {
+    "equirect_center_forward": [
+      0,
+      0,
+      -1
+    ],
+    "equirect_right_at_center": [
+      1,
+      0,
+      0
+    ],
+    "equirect_top": [
+      0,
+      1,
+      0
+    ],
+    "face_axes_forward_right_up": {
+      "pos_x": [
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ],
+      "neg_x": [
+        [
+          -1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          -1
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ],
+      "pos_y": [
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ],
+      "neg_y": [
+        [
+          0,
+          -1,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          -1
+        ]
+      ],
+      "pos_z": [
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          -1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ],
+      "neg_z": [
+        [
+          0,
+          0,
+          -1
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ]
+    }
+  },
+  "input": {
+    "face_size": 1920,
+    "inventory": [
+      "pos_x.png",
+      "neg_x.png",
+      "pos_y.png",
+      "neg_y.png",
+      "pos_z.png",
+      "neg_z.png",
+      "capture.json"
+    ],
+    "face_sha256": {
+      "pos_x": "2af9c8c8a7f443af33c13098449297cc7b8f025a82d83bf339dd9a37812f4e72",
+      "neg_x": "8581da8c49994879ca673133c9545cfeee1c061f01b880feee61b30e77ba8f8f",
+      "pos_y": "c33607158995e6310c4e35cbfaeb1c379bc4ac54577755e4a0f7e8ed08f76564",
+      "neg_y": "da395abfc823bd036adcb08749dcdb96f3ac4301a90078c44dc07b33330ef205",
+      "pos_z": "4452b816819cee40f25caf799bfc651a6c45d3e7e625734ec9e2b9a5cad5bbfb",
+      "neg_z": "e4de544fb54b0c39ad88004998015f174330c5bce549f63d11e25bf77dcfa86b"
+    },
+    "face_bytes": {
+      "pos_x": 2801053,
+      "neg_x": 3343482,
+      "pos_y": 2022399,
+      "neg_y": 3908496,
+      "pos_z": 3128307,
+      "neg_z": 2685982
+    },
+    "capture_metadata_sha256": "6263808fdf0d2366b8a53405187c5d397c8d69674e81772e366300106b211429",
+    "capture_metadata": {
+      "aabb": "[P: (-123.0491, -111.3014, -126.0911), S: (266.3926, 135.1025, 277.7195)]",
+      "asset": "res://assets/splats/snow-mountain-with-lake/snow-mountain-with-lake.compressed.ply",
+      "display_server": "X11",
+      "face_order": [
+        "pos_x",
+        "neg_x",
+        "pos_y",
+        "neg_y",
+        "pos_z",
+        "neg_z"
+      ],
+      "face_size": 1920,
+      "faces": [
+        {
+          "bytes": 2801053,
+          "forward": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "name": "pos_x",
+          "sha256": "2af9c8c8a7f443af33c13098449297cc7b8f025a82d83bf339dd9a37812f4e72",
+          "up": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "bytes": 3343482,
+          "forward": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "name": "neg_x",
+          "sha256": "8581da8c49994879ca673133c9545cfeee1c061f01b880feee61b30e77ba8f8f",
+          "up": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "bytes": 2022399,
+          "forward": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "name": "pos_y",
+          "sha256": "c33607158995e6310c4e35cbfaeb1c379bc4ac54577755e4a0f7e8ed08f76564",
+          "up": [
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        {
+          "bytes": 3908496,
+          "forward": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "name": "neg_y",
+          "sha256": "da395abfc823bd036adcb08749dcdb96f3ac4301a90078c44dc07b33330ef205",
+          "up": [
+            0.0,
+            0.0,
+            -1.0
+          ]
+        },
+        {
+          "bytes": 3128307,
+          "forward": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "name": "pos_z",
+          "sha256": "4452b816819cee40f25caf799bfc651a6c45d3e7e625734ec9e2b9a5cad5bbfb",
+          "up": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "bytes": 2685982,
+          "forward": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "name": "neg_z",
+          "sha256": "e4de544fb54b0c39ad88004998015f174330c5bce549f63d11e25bf77dcfa86b",
+          "up": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        }
+      ],
+      "godot_version": "4.6.2-stable (official)",
+      "load_count": 1,
+      "point_count": 2200000,
+      "rendering_device": "NVIDIA GeForce RTX 3080",
+      "rendering_driver": "vulkan",
+      "rendering_method": "forward_plus",
+      "vertical_fov_degrees": 90.0,
+      "viewpoint": [
+        0.0,
+        0.0,
+        4.0
+      ]
+    },
+    "note": "Full-resolution GPU face PNGs are transient build products and are not retained in Git."
+  },
+  "output": {
+    "path": "snow-mountain-with-lake-photosphere.jpg",
+    "dimensions": [
+      4096,
+      2048
+    ],
+    "mode": "RGB",
+    "jpeg": {
+      "quality": 92,
+      "subsampling": 0,
+      "optimize": false,
+      "progressive": false
+    },
+    "sha256": "f501bec5b23357dc06be0fe8df8cb8ca39e901ca2b3230c66019fb2eaa08029e",
+    "bytes": 1821243
+  },
+  "review": {
+    "cubemap-cross.png": {
+      "sha256": "d6869d05264f1852f087ac3119e1bf77992787e311f837e806577cefe9742581",
+      "bytes": 2198638,
+      "dimensions": [
+        2048,
+        1536
+      ],
+      "mode": "RGB"
+    },
+    "panorama-preview.jpg": {
+      "sha256": "33610aaba8ea712ebd89dc60b2b5c19fd36f2e999624b230e99bc4c6c1a53d0e",
+      "bytes": 168728,
+      "dimensions": [
+        1024,
+        512
+      ],
+      "mode": "RGB",
+      "jpeg": {
+        "quality": 90,
+        "subsampling": 0,
+        "optimize": false,
+        "progressive": false
+      }
+    }
+  },
+  "versions": {
+    "pillow": "12.1.0",
+    "numpy": "2.4.2"
+  }
+}

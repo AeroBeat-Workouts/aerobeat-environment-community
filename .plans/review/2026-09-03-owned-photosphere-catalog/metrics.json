@@ -1,0 +1,59 @@
+{
+  "schema": "aerobeat.photosphere-continuity-metrics/v1",
+  "thresholds": {
+    "seamMeanRgbDelta": 5,
+    "seamP95RgbDelta": 16,
+    "poleTopChannelSpread": 16,
+    "poleBottomChannelSpread": 16
+  },
+  "entries": {
+    "luminious-ice-cave": {
+      "seamMeanRgbDelta": 3.4544270833333335,
+      "seamP95RgbDelta": 12.666666666666666,
+      "poleTopChannelSpread": 1.9617457576818058,
+      "poleBottomChannelSpread": 1.4677751021134557
+    },
+    "icebergs-on-sea-shore": {
+      "seamMeanRgbDelta": 2.973470052083333,
+      "seamP95RgbDelta": 12.0,
+      "poleTopChannelSpread": 0.2640135697467189,
+      "poleBottomChannelSpread": 1.9200788247332055
+    },
+    "snow-mountain-with-lake": {
+      "seamMeanRgbDelta": 2.7858072916666665,
+      "seamP95RgbDelta": 9.0,
+      "poleTopChannelSpread": 0.5359797430848491,
+      "poleBottomChannelSpread": 4.543631716196199
+    },
+    "iceland-waterfall": {
+      "seamMeanRgbDelta": 1.98681640625,
+      "seamP95RgbDelta": 6.333333333333333,
+      "poleTopChannelSpread": 0.23340437717143891,
+      "poleBottomChannelSpread": 12.765343785226612
+    },
+    "igloo-toon": {
+      "seamMeanRgbDelta": 3.0647786458333335,
+      "seamP95RgbDelta": 9.549999999999955,
+      "poleTopChannelSpread": 0.18875717856796204,
+      "poleBottomChannelSpread": 0.7407578638488909
+    },
+    "salt-lake": {
+      "seamMeanRgbDelta": 2.5118815104166665,
+      "seamP95RgbDelta": 10.333333333333334,
+      "poleTopChannelSpread": 0.6960499641284187,
+      "poleBottomChannelSpread": 8.203737738803378
+    },
+    "salt-lake-2": {
+      "seamMeanRgbDelta": 2.48779296875,
+      "seamP95RgbDelta": 8.883333333333288,
+      "poleTopChannelSpread": 0.08776259881093529,
+      "poleBottomChannelSpread": 1.4903308994283428
+    },
+    "alpine-river-valley": {
+      "seamMeanRgbDelta": 3.4431966145833335,
+      "seamP95RgbDelta": 14.0,
+      "poleTopChannelSpread": 0.015623092534937653,
+      "poleBottomChannelSpread": 10.313850208136236
+    }
+  }
+}

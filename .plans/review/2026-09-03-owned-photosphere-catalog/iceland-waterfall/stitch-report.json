@@ -1,0 +1,317 @@
+{
+  "convention": {
+    "equirect_center_forward": [
+      0,
+      0,
+      -1
+    ],
+    "equirect_right_at_center": [
+      1,
+      0,
+      0
+    ],
+    "equirect_top": [
+      0,
+      1,
+      0
+    ],
+    "face_axes_forward_right_up": {
+      "pos_x": [
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ],
+      "neg_x": [
+        [
+          -1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          -1
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ],
+      "pos_y": [
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ],
+      "neg_y": [
+        [
+          0,
+          -1,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          -1
+        ]
+      ],
+      "pos_z": [
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          -1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ],
+      "neg_z": [
+        [
+          0,
+          0,
+          -1
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ]
+    }
+  },
+  "input": {
+    "face_size": 1920,
+    "inventory": [
+      "pos_x.png",
+      "neg_x.png",
+      "pos_y.png",
+      "neg_y.png",
+      "pos_z.png",
+      "neg_z.png",
+      "capture.json"
+    ],
+    "face_sha256": {
+      "pos_x": "d78ace77b4386f32a9779e17a4db5eff51f09b37a9a9c69b183b4ce5043e35f8",
+      "neg_x": "4334b6215e20c9d8165f02ddb198ad41e88232f0d2d67b7940c66b54963e7881",
+      "pos_y": "d5d32f5762c094dc0c951900cac41ab4501ad184437e493997a85a990432ffcf",
+      "neg_y": "03e31ed3809d5a0c2854405ba9c1d54cfff5375e32d86175d16c8eeb81cb784d",
+      "pos_z": "5119bac6a86b62ca447c3ce4ecc6aab5aafa44de3c54c8e44bfde52eb11f2c68",
+      "neg_z": "fd634b870f1010aaa72498bee368d61e5d4fbc0f47586fb5a6b94cf1a59b8e1e"
+    },
+    "face_bytes": {
+      "pos_x": 2983189,
+      "neg_x": 3490580,
+      "pos_y": 1825638,
+      "neg_y": 4630933,
+      "pos_z": 2612137,
+      "neg_z": 3342526
+    },
+    "capture_metadata_sha256": "04fc4dd93fd615dc0e3821569cec230380c6fc1f58c06d881bf74f846034f66c",
+    "capture_metadata": {
+      "aabb": "[P: (-110.9632, -137.7865, -151.6015), S: (225.2568, 149.8706, 283.2019)]",
+      "asset": "res://assets/splats/iceland-waterfall/iceland-waterfall.compressed.ply",
+      "display_server": "X11",
+      "face_order": [
+        "pos_x",
+        "neg_x",
+        "pos_y",
+        "neg_y",
+        "pos_z",
+        "neg_z"
+      ],
+      "face_size": 1920,
+      "faces": [
+        {
+          "bytes": 2983189,
+          "forward": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "name": "pos_x",
+          "sha256": "d78ace77b4386f32a9779e17a4db5eff51f09b37a9a9c69b183b4ce5043e35f8",
+          "up": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "bytes": 3490580,
+          "forward": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "name": "neg_x",
+          "sha256": "4334b6215e20c9d8165f02ddb198ad41e88232f0d2d67b7940c66b54963e7881",
+          "up": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "bytes": 1825638,
+          "forward": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "name": "pos_y",
+          "sha256": "d5d32f5762c094dc0c951900cac41ab4501ad184437e493997a85a990432ffcf",
+          "up": [
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        {
+          "bytes": 4630933,
+          "forward": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "name": "neg_y",
+          "sha256": "03e31ed3809d5a0c2854405ba9c1d54cfff5375e32d86175d16c8eeb81cb784d",
+          "up": [
+            0.0,
+            0.0,
+            -1.0
+          ]
+        },
+        {
+          "bytes": 2612137,
+          "forward": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "name": "pos_z",
+          "sha256": "5119bac6a86b62ca447c3ce4ecc6aab5aafa44de3c54c8e44bfde52eb11f2c68",
+          "up": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "bytes": 3342526,
+          "forward": [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "name": "neg_z",
+          "sha256": "fd634b870f1010aaa72498bee368d61e5d4fbc0f47586fb5a6b94cf1a59b8e1e",
+          "up": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        }
+      ],
+      "godot_version": "4.6.2-stable (official)",
+      "load_count": 1,
+      "point_count": 2200000,
+      "rendering_device": "NVIDIA GeForce RTX 3080",
+      "rendering_driver": "vulkan",
+      "rendering_method": "forward_plus",
+      "vertical_fov_degrees": 90.0,
+      "viewpoint": [
+        0.0,
+        0.0,
+        4.0
+      ]
+    },
+    "note": "Full-resolution GPU face PNGs are transient build products and are not retained in Git."
+  },
+  "output": {
+    "path": "iceland-waterfall-photosphere.jpg",
+    "dimensions": [
+      4096,
+      2048
+    ],
+    "mode": "RGB",
+    "jpeg": {
+      "quality": 92,
+      "subsampling": 0,
+      "optimize": false,
+      "progressive": false
+    },
+    "sha256": "282f69ba1cad321074a8bdb84dd79d747d3c14a3df7408146837da1b08713c09",
+    "bytes": 1983883
+  },
+  "review": {
+    "cubemap-cross.png": {
+      "sha256": "0dca627b6611b3af2ad55384e435a410864ea5f87fc96d01adb083093b1a9302",
+      "bytes": 2278011,
+      "dimensions": [
+        2048,
+        1536
+      ],
+      "mode": "RGB"
+    },
+    "panorama-preview.jpg": {
+      "sha256": "0effa2ed196d086e959e4258282159b6528660f8f143c7d4c943150cb783b562",
+      "bytes": 158446,
+      "dimensions": [
+        1024,
+        512
+      ],
+      "mode": "RGB",
+      "jpeg": {
+        "quality": 90,
+        "subsampling": 0,
+        "optimize": false,
+        "progressive": false
+      }
+    }
+  },
+  "versions": {
+    "pillow": "12.1.0",
+    "numpy": "2.4.2"
+  }
+}
