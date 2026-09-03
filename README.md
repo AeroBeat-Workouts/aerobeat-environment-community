@@ -86,3 +86,39 @@ That helper safely clears the generated GodotEnv install targets first:
 
 Then it reruns `godotenv addons install` so the testbed comes back in a clean state
 without relying on manual deletion tribal knowledge.
+
+## Luminious ice cave photosphere source
+
+The AeroBeat-controlled runtime photosphere source and its sidecar/manifest live in
+`.testbed/assets/images/luminious-ice-cave-photosphere/`. Reusable capture and stitch
+utilities live in `.testbed/tools/photosphere/`; review-only downscales and the exact
+intermediate/output hash record live in
+`.plans/review/2026-09-03-luminious-ice-cave-photosphere/`.
+
+Capture requires a visible Vulkan Forward+ session because headless GDGS capture does
+not reliably complete a draw. The scene loads the selected splat once, captures six
+square 90-degree faces without UI, and quits after the sixth face:
+
+```bash
+cd .testbed
+godot --path . --resolution 1920x1920 res://tools/photosphere/capture_cubemap.tscn -- \
+  --asset=res://assets/splats/luminious-ice-cave/luminious-ice-cave.compressed.ply \
+  --out-dir=/tmp/aerobeat-luminious-cubemap --face-size=1920 --timeout-seconds=360
+```
+
+Stitch and validate from the repository root with Python 3.14.2, Pillow 12.1.0,
+and NumPy 2.4.2:
+
+```bash
+python3 .testbed/tools/photosphere/cube_to_equirect.py \
+  --faces /tmp/aerobeat-luminious-cubemap \
+  --output .testbed/assets/images/luminious-ice-cave-photosphere/luminious-ice-cave-photosphere.jpg \
+  --review-dir .plans/review/2026-09-03-luminious-ice-cave-photosphere \
+  --width 4096 --height 2048
+python3 .testbed/tools/photosphere/validate_photosphere.py --repo-root .
+```
+
+The six full-resolution face PNGs are transient and intentionally not committed. Their
+hashes and sizes are retained in the review stitch report, but a GPU recapture is not
+promised byte-identical across GDGS/device/driver changes; the offline stitch is
+deterministic only for fixed face bytes and the pinned tool versions.
