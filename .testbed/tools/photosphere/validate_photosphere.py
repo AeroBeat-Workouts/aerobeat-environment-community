@@ -21,6 +21,24 @@ IDS = (
     "iceland-waterfall", "igloo-toon", "salt-lake", "salt-lake-2", "alpine-river-valley",
 )
 CONFIG_KEYS = {"schema", "version", "id", "projection", "transform"}
+EXPECTED_YAW_DEGREES = {
+    "luminious-ice-cave": 0,
+    "icebergs-on-sea-shore": 0,
+    "snow-mountain-with-lake": 0,
+    "iceland-waterfall": 0,
+    "igloo-toon": 0,
+    "salt-lake": 0,
+    "salt-lake-2": 0,
+    "alpine-river-valley": 180,
+}
+EXPECTED_TRANSFORMS = {
+    source_id: {
+        "position": {"x": 0, "y": 0, "z": 0},
+        "rotationDegrees": {"xPitch": 0, "yYaw": EXPECTED_YAW_DEGREES[source_id], "zRoll": 0},
+        "scale": 1,
+    }
+    for source_id in IDS
+}
 THRESHOLDS = {"seamMeanRgbDelta": 5.0, "seamP95RgbDelta": 16.0, "poleTopChannelSpread": 16.0, "poleBottomChannelSpread": 16.0}
 FORBIDDEN_METADATA = ("/home/", "\\home\\", "luis vidal", "sketchfab", "bfc9a041814f4112b016904edfaad0c5", "alien-moon-icescape")
 REJECTED_HASHES = {
@@ -188,7 +206,7 @@ def main() -> int:
         config_path = asset_dir / f"{asset_id}.config.json"
         image_path = asset_dir / f"{asset_id}.jpg"
         config = json.loads(config_path.read_text(encoding="utf-8"))
-        expected_config = {"schema": "aerobeat/environment_asset_config", "version": 1, "id": asset_id, "projection": "equirectangular", "transform": {"position": {"x": 0, "y": 0, "z": 0}, "rotationDegrees": {"xPitch": 0, "yYaw": 0, "zRoll": 0}, "scale": 1}}
+        expected_config = {"schema": "aerobeat/environment_asset_config", "version": 1, "id": asset_id, "projection": "equirectangular", "transform": EXPECTED_TRANSFORMS[source_id]}
         if set(config) != CONFIG_KEYS or config != expected_config:
             fail(f"bounded config contract mismatch: {source_id}")
         if entry.get("projection") != "equirectangular" or entry.get("centerForward") != [0, 0, -1] or entry.get("worldUp") != [0, 1, 0]:

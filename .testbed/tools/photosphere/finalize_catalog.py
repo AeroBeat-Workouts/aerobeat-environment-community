@@ -54,6 +54,24 @@ NOTES = {
     "alpine-river-valley": ("strong-comparison", "Complete alpine meadow, river, mountain, and sky coverage; detailed grass at the nadir produces the measured bottom-row variation."),
 }
 CONFIG_SCHEMA = "aerobeat/environment_asset_config"
+CONFIG_YAW_DEGREES = {
+    "luminious-ice-cave": 0,
+    "icebergs-on-sea-shore": 0,
+    "snow-mountain-with-lake": 0,
+    "iceland-waterfall": 0,
+    "igloo-toon": 0,
+    "salt-lake": 0,
+    "salt-lake-2": 0,
+    "alpine-river-valley": 180,
+}
+CONFIG_TRANSFORMS = {
+    source_id: {
+        "position": {"x": 0, "y": 0, "z": 0},
+        "rotationDegrees": {"xPitch": 0, "yYaw": CONFIG_YAW_DEGREES[source_id], "zRoll": 0},
+        "scale": 1,
+    }
+    for source_id in IDS
+}
 CATALOG_SCHEMA = "aerobeat.photosphere-catalog/v1"
 MANIFEST_SCHEMA = "aerobeat.photosphere-derivative/v1"
 RIGHTS = {
@@ -132,11 +150,7 @@ def main() -> int:
             "version": 1,
             "id": asset_id,
             "projection": "equirectangular",
-            "transform": {
-                "position": {"x": 0, "y": 0, "z": 0},
-                "rotationDegrees": {"xPitch": 0, "yYaw": 0, "zRoll": 0},
-                "scale": 1,
-            },
+            "transform": CONFIG_TRANSFORMS[source_id],
         }
         config_path = asset_dir / f"{asset_id}.config.json"
         config_path.write_text(json.dumps(config, indent=2) + "\n", encoding="utf-8")

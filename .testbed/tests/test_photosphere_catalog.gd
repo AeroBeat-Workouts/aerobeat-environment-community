@@ -10,6 +10,16 @@ const EXPECTED_IDS := [
 	"salt-lake-2-photosphere",
 	"alpine-river-valley-photosphere",
 ]
+const EXPECTED_YAW_BY_ID := {
+	"luminious-ice-cave-photosphere": 0.0,
+	"icebergs-on-sea-shore-photosphere": 0.0,
+	"snow-mountain-with-lake-photosphere": 0.0,
+	"iceland-waterfall-photosphere": 0.0,
+	"igloo-toon-photosphere": 0.0,
+	"salt-lake-photosphere": 0.0,
+	"salt-lake-2-photosphere": 0.0,
+	"alpine-river-valley-photosphere": 180.0,
+}
 
 func test_catalog_has_exact_ordered_eight_entries_and_bounded_configs() -> void:
 	var catalog := _read_json("res://assets/images/photosphere-catalog.json")
@@ -27,7 +37,7 @@ func test_catalog_has_exact_ordered_eight_entries_and_bounded_configs() -> void:
 		assert_eq(config.get("version"), 1.0)
 		assert_eq(config.get("id"), asset_id)
 		assert_eq(config.get("projection"), "equirectangular")
-		assert_eq(config.get("transform"), {"position": {"x": 0.0, "y": 0.0, "z": 0.0}, "rotationDegrees": {"xPitch": 0.0, "yYaw": 0.0, "zRoll": 0.0}, "scale": 1.0})
+		assert_eq(config.get("transform"), {"position": {"x": 0.0, "y": 0.0, "z": 0.0}, "rotationDegrees": {"xPitch": 0.0, "yYaw": EXPECTED_YAW_BY_ID[asset_id], "zRoll": 0.0}, "scale": 1.0})
 		assert_eq(entry.get("centerForward"), [0.0, 0.0, -1.0])
 		assert_eq(entry.get("worldUp"), [0.0, 1.0, 0.0])
 		assert_true(FileAccess.file_exists(entry["image"]["path"].replace(".testbed/", "res://")), "%s JPEG exists" % asset_id)

@@ -137,7 +137,7 @@
   },
   "catalog": {
     "path": ".testbed/assets/images/photosphere-catalog.json",
-    "sha256": "bf68f00eb4d346a98958a4b962c2b37351e1ca21c0f96bcb101e008c681c7e93",
+    "sha256": "007c4bf63ac9cfccc062986ffa10f28f1bd438f0cabebbf387dee6c77b27cb9d",
     "bytes": 18656
   },
   "note": "Review artifacts are bounded derivatives only. No full-resolution cubemap faces, PLY bytes, rejected GLB bytes, or absolute paths are included."

@@ -421,12 +421,12 @@
       },
       "config": {
         "path": ".testbed/assets/images/alpine-river-valley-photosphere/alpine-river-valley-photosphere.config.json",
-        "sha256": "c1cda19a958cee99c4d021baf9455ed95e0d0fd9cc420bfe1857ee5b7da1f5e6",
-        "bytes": 334
+        "sha256": "69a62f73bc1193b0e9414c2698a269e24ed06c309616dc345a3f5cf80966f977",
+        "bytes": 336
       },
       "manifest": {
         "path": ".testbed/assets/images/alpine-river-valley-photosphere/manifest.json",
-        "sha256": "5f01074a8eebfd2246587b68dc3a162a77d431c4350700a5df38ba67cb00d201",
+        "sha256": "10be1ad8a8847239df7ad75aa8e4ad010972b5f218b441e028cafc32bfbfe8fc",
         "bytes": 4147
       },
       "source": {
